@@ -1,0 +1,588 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Haunted Map - AI Generated Paranormal Locations&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>* {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Arial', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 100%);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow-x: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.header {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #2c1810, #4a2c17);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.header h1 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 2.5em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-shadow: 2px 2px 4px rgba(0,0,0,0.7);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.header p {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #cccccc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.map-controls {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.9);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.control-group {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.control-group label {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>select, input {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #555;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #333;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.generate-btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #ff6b35, #e55a2e);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 25px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-left: auto;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.generate-btn:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-2px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.map-container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.9);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.interactive-map {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 500px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #1a1a1a, #2d2d2d);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #444;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: crosshair;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-marker {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: radial-gradient(circle, #ff6b35, #cc4a1a);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #fff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 10px rgba(255, 107, 53, 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>animation: pulse 2s infinite;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes pulse {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>70% { box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-marker:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: scale(1.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 10;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-popup {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bottom: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateX(-50%);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0, 0, 0, 0.95);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 300px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>z-index: 100;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-popup h3 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-popup p {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.4;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.locations-list {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(145deg, #2a2a2a, #1f1f1f);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #444;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-card::before {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>content: '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>right: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 3px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(90deg, #ff6b35, #ff8c42, #ff6b35);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-card:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-5px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 25px rgba(255, 107, 53, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-title {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.3em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-type {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255, 107, 53, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.8em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-story {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-features {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-top: 1px solid #333;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-top: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.location-features h4 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.features-list {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.feature-tag {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255, 107, 53, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 3px 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.8em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(255, 107, 53, 0.3);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.loading {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.instructions {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.8);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-left: 4px solid #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.instructions h3 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.instructions p {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.5;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 768px) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.map-controls {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>align-items: stretch;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.generate-btn {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>margin-left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.header h1 {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>font-size: 2em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.locations-list {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;<span class="s1">👻</span> AI Generated Haunted Map&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;Discover mysterious and haunted locations with AI-generated stories and paranormal activities&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="instructions"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;<span class="s1">🗺️</span> How to Use the Haunted Map&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Select your preferences below and click "Generate Locations" to populate the map with AI-generated haunted sites. Click on any marker to view the location's paranormal story and reported activities.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="map-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Region:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="region"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="northeast"&gt;Northeast US&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="southeast"&gt;Southeast US&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="midwest"&gt;Midwest US&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="southwest"&gt;Southwest US&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="west"&gt;Western US&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="international"&gt;International&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Location Type:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="locationType"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mixed"&gt;All Types&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="cemetery"&gt;Cemeteries&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mansion"&gt;Historic Mansions&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="asylum"&gt;Abandoned Asylums&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="hotel"&gt;Haunted Hotels&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="battlefield"&gt;Battlefields&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="school"&gt;Schools &amp; Universities&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="theater"&gt;Theaters &amp; Opera Houses&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="prison"&gt;Prisons &amp; Jails&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Activity Level:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="activityLevel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mixed"&gt;All Levels&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mild"&gt;Mild Activity&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="moderate"&gt;Moderate Activity&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="intense"&gt;Intense Activity&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Number of Locations:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="locationCount"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="5"&gt;5 Locations&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="10"&gt;10 Locations&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="15"&gt;15 Locations&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="20"&gt;20 Locations&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="generate-btn" onclick="generateHauntedLocations()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span><span class="s1">🎲</span> Generate Locations</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="map-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="interactive-map" id="hauntedMap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p style="font-size: 1.2em; margin-bottom: 10px;"&gt;<span class="s1">🗺️</span> Interactive Haunted Map&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p style="font-size: 0.9em;"&gt;Click "Generate Locations" to populate the map with haunted sites&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="locationsList" class="locations-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Generated locations will appear here --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Sample AI-generated haunted locations database</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const hauntedLocationsDB = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cemetery: [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "Whispering Oaks Cemetery",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "Established in 1847, this Victorian-era cemetery is known for the mysterious woman in white who walks among the graves at midnight. Visitors report cold spots near the old mausoleums and the sound of children laughing near the family plots.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Cold Spots", "Apparitions", "EVP Activity", "Mysterious Lights"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "Shadowmere Memorial Gardens",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "This sprawling cemetery dating back to 1823 is home to the ghost of a Civil War soldier who still patrols the grounds. The sound of marching boots echoes through the paths, and visitors often see a figure in uniform standing by the war memorial.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Phantom Footsteps", "Military Apparitions", "Temperature Drops", "Electromagnetic Disturbances"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mansion: [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "Blackwood Manor",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "Built in 1889 by railroad baron Edmund Blackwood, this Gothic Revival mansion is said to be cursed by the tragic deaths of three generations of the family. Visitors report doors opening on their own, piano music from empty rooms, and the scent of roses in winter.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Moving Objects", "Phantom Music", "Unexplained Scents", "Shadow Figures"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "Ravencroft Estate",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "Once home to a prominent 19th-century judge, this Victorian mansion harbors dark secrets. The ghost of Judge Ravencroft is said to still hear cases in his study, and witnesses report the sound of a gavel striking wood in the dead of night.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Phantom Sounds", "Cold Drafts", "Electrical Disturbances", "Spectral Figures"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>asylum: [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "Millfield Psychiatric Hospital",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "Abandoned in 1987, this former mental health facility is notorious for its dark history and ongoing paranormal activity. Visitors report hearing patients' voices echoing through empty corridors and seeing figures in hospital gowns wandering the halls.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Disembodied Voices", "Apparitions", "Medical Equipment Moving", "Overwhelming Sadness"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>hotel: [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: "The Grandview Hotel",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>story: "This 1920s luxury hotel has never closed its doors, but some guests never checked out. Room 237 is permanently unavailable due to reports of a woman in 1920s attire who appears in mirrors and rearranges guests' belongings.",</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Mirror Apparitions", "Moving Objects", "Vintage Perfume Scent", "Elevator Malfunctions"],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let currentLocations = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let activePopup = null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateHauntedLocations() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const region = document.getElementById('region').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const locationType = document.getElementById('locationType').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const activityLevel = document.getElementById('activityLevel').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const locationCount = parseInt(document.getElementById('locationCount').value);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Show loading</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('locationsList').innerHTML = '&lt;div class="loading"&gt;<span class="s1">🔮</span> AI is generating haunted locations...&lt;/div&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>currentLocations = [];</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Generate locations based on selections</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const types = locationType === 'mixed' ? Object.keys(hauntedLocationsDB) : [locationType];</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>for (let i = 0; i &lt; locationCount; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const randomType = types[Math.floor(Math.random() * types.length)];</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const typeLocations = hauntedLocationsDB[randomType] || hauntedLocationsDB.cemetery;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const baseLocation = typeLocations[Math.floor(Math.random() * typeLocations.length)];</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Create variation of the base location</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const location = {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>id: i,</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>name: generateVariationName(baseLocation.name, i),</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>type: randomType,</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>story: generateVariationStory(baseLocation.story, i),</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>features: shuffleArray([...baseLocation.features]).slice(0, 3 + Math.floor(Math.random() * 2)),</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>activityLevel: activityLevel === 'mixed' ?<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>['mild', 'moderate', 'intense'][Math.floor(Math.random() * 3)] :<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>activityLevel,</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>x: Math.random() * 90 + 5, // 5-95% of map width</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>y: Math.random() * 80 + 10<span class="Apple-converted-space">  </span>// 10-90% of map height</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>};</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>currentLocations.push(location);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>displayLocationsOnMap();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>displayLocationsList();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}, 2000); // Simulate AI generation time</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateVariationName(baseName, index) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const prefixes = ['Old', 'Forgotten', 'Ancient', 'Cursed', 'Lost', 'Hidden', 'Abandoned', 'Mysterious'];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const suffixes = ['Heights', 'Hollow', 'Ridge', 'Grove', 'Point', 'Valley', 'Cross', 'Hill'];</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (Math.random() &lt; 0.3) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return baseName.replace(/^[\w\s]+/, prefix + ' ' + baseName.split(' ').slice(-1)[0]);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>return baseName;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateVariationStory(baseStory, index) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const variations = [</p>
+<p class="p1"><span class="Apple-converted-space">                </span>baseStory,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/visitors report/gi, 'witnesses have experienced'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/said to be/gi, 'believed to be'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/ghost of/gi, 'spirit of'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/mysterious/gi, 'unexplained')</p>
+<p class="p1"><span class="Apple-converted-space">            </span>];</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>return variations[index % variations.length];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function shuffleArray(array) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const shuffled = [...array];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = shuffled.length - 1; i &gt; 0; i--) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const j = Math.floor(Math.random() * (i + 1));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return shuffled;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function displayLocationsOnMap() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const map = document.getElementById('hauntedMap');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>map.innerHTML = '';</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentLocations.forEach(location =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const marker = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>marker.className = 'location-marker';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>marker.style.left = location.x + '%';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>marker.style.top = location.y + '%';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>marker.innerHTML = '<span class="s1">👻</span>';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>marker.onclick = () =&gt; showLocationPopup(location, marker);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>map.appendChild(marker);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function showLocationPopup(location, marker) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Remove any existing popup</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const existingPopup = document.querySelector('.location-popup');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (existingPopup) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>existingPopup.remove();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const popup = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>popup.className = 'location-popup';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>popup.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>popup.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3&gt;${location.name}&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;&lt;strong&gt;Type:&lt;/strong&gt; ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;&lt;strong&gt;Activity:&lt;/strong&gt; ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;${location.story.substring(0, 150)}...&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>marker.appendChild(popup);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Remove popup after 5 seconds</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (popup.parentNode) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>popup.remove();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}, 5000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function displayLocationsList() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const listContainer = document.getElementById('locationsList');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>listContainer.innerHTML = currentLocations.map(location =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="location-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-title"&gt;${location.name}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-type"&gt;${location.type.charAt(0).toUpperCase() + location.type.slice(1)} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-story"&gt;${location.story}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-features"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h4&gt;Reported Paranormal Activity:&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="features-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>${location.features.map(feature =&gt; `&lt;span class="feature-tag"&gt;${feature}&lt;/span&gt;`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Generate initial locations on page load</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.addEventListener('load', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(generateHauntedLocations, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
