@@ -316,13 +316,13 @@
 <body>
     <div class="header">
         <h1>👻 Interactive Haunted Map</h1>
-        <p>Explore haunted places and attractions worldwide with stories</p>
+        <p>Explore Haunted Places and Attractions with Stories.</p>
     </div>
 
     <div class="container">
         <div class="instructions">
             <h3>🗺️ How to Use the Haunted Map</h3>
-            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location's paranormal story and reported activities.</p>
+            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location its details.</p>
         </div>
 
         <div class="map-controls">
@@ -368,10 +368,11 @@
             <div class="control-group">
                 <label>Number of Locations:</label>
                 <select id="locationCount">
-                    <option value="5">5 Locations</option>
                     <option value="10">10 Locations</option>
-                    <option value="15">15 Locations</option>
                     <option value="20">20 Locations</option>
+                    <option value="35">35 Locations</option>
+                    <option value="40">40 Locations</option>
+                    <option value="50">50 Locations</option>
                 </select>
             </div>
 
@@ -489,7 +490,7 @@
             battlefield: [
                 {
                     name: "Bloody Creek Battlefield",
-                    story: "Site of a brutal Civil War skirmish in 1863, where over 200 soldiers lost their lives in a single day. Visitors report hearing musket fire and battle cries, and seeing uniformed figures marching across the field at dawn.",
+                    story: "Site of a brutal Civil War skirmish in 1863, where over 200 soldiers lost their lives in a single day.  Visitors report hearing musket fire and battle cries, and seeing uniformed figures marching across the field at dawn.",
                     features: ["Battle Sounds", "Military Apparitions", "Residual Energy", "Historical Imprints"],
                     activityLevel: "intense"
                 }
@@ -536,7 +537,7 @@
             map.setView(regionData.center, regionData.zoom);
 
             // Show loading
-            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 AI is generating haunted locations...</div>';
+            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 Generating haunted locations...</div>';
             
             setTimeout(() => {
                 currentLocations = [];
