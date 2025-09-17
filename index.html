@@ -316,7 +316,7 @@
 <body>
     <div class="header">
         <h1>👻 Haunted Map</h1>
-        <p>Discover mysterious and haunted locations with stories on real geographic maps</p>
+        <p>Explore ghost stories mapped worldwide</p>
     </div>
 
     <div class="container">
@@ -343,14 +343,16 @@
                 <label>Location Type:</label>
                 <select id="locationType">
                     <option value="mixed">All Types</option>
+                    <option value="asylum">Abandoned Asylums</option> 
+                    <option value="battlefield">Battlefields</option>                    
                     <option value="cemetery">Cemeteries</option>
-                    <option value="mansion">Historic Mansions</option>
-                    <option value="asylum">Abandoned Asylums</option>
-                    <option value="hotel">Haunted Hotels</option>
-                    <option value="battlefield">Battlefields</option>
+                    <option value="attractions">Haunted Attractions</option>
+                    <option value="hotel">Haunted Hotels</option>           
+                    <option value="historic">Historic Places</option>
+                    <option value="prison">Prisons & Jails</option>
                     <option value="school">Schools & Universities</option>
                     <option value="theater">Theaters & Opera Houses</option>
-                    <option value="prison">Prisons & Jails</option>
+
                 </select>
             </div>
 
@@ -411,6 +413,8 @@
             midwest: { center: [41.0, -93.0], zoom: 5 },
             southwest: { center: [34.0, -108.0], zoom: 5 },
             west: { center: [40.0, -120.0], zoom: 5 },
+            australia: { center: [-25.0, 135.0], zoom: 4 },
+            canada: { center: [56.0, -106.0], zoom: 4 }
             uk: { center: [54.5, -3.0], zoom: 6 },
             europe: { center: [50.0, 10.0], zoom: 4 }
         };
