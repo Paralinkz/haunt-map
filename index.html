@@ -1,588 +1,571 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="1894.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    span.s1 {font: 12.0px 'Apple Color Emoji'}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haunted Map - AI Generated Paranormal Locations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c1810, #4a2c17);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #ff6b35;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .map-controls {
+            background: rgba(42, 42, 42, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            color: #ff6b35;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        select, input {
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            font-size: 14px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #ff6b35, #e55a2e);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .map-container {
+            background: rgba(42, 42, 42, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-map {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border: 2px solid #444;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .location-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ff6b35, #cc4a1a);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+        }
+
+        .location-marker:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .location-popup {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+            max-width: 300px;
+            display: none;
+            z-index: 100;
+        }
+
+        .location-popup h3 {
+            color: #ff6b35;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .location-popup p {
+            color: #ccc;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .locations-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .location-card {
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border: 1px solid #444;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42, #ff6b35);
+        }
+
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.2);
+            border-color: #ff6b35;
+        }
+
+        .location-title {
+            color: #ff6b35;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .location-type {
+            display: inline-block;
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-bottom: 15px;
+            border: 1px solid #ff6b35;
+        }
+
+        .location-story {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .location-features {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+
+        .location-features h4 {
+            color: #ff6b35;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: rgba(255, 107, 53, 0.1);
+            color: #ff6b35;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            color: #ff6b35;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+
+        .instructions {
+            background: rgba(42, 42, 42, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .instructions h3 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+        }
+
+        .instructions p {
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .map-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .generate-btn {
+                margin-left: 0;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .locations-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Haunted Map - AI Generated Paranormal Locations&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>* {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Arial', sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 100%);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ffffff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>min-height: 100vh;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow-x: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #2c1810, #4a2c17);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 20px rgba(255, 107, 53, 0.3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header h1 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 2.5em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-shadow: 2px 2px 4px rgba(0,0,0,0.7);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header p {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #cccccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.map-controls {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.9);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.control-group {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.control-group label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>select, input {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #555;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.generate-btn {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #ff6b35, #e55a2e);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 25px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-left: auto;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.generate-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-2px);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.map-container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.9);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.interactive-map {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 500px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #1a1a1a, #2d2d2d);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #444;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: crosshair;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-marker {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: radial-gradient(circle, #ff6b35, #cc4a1a);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #fff;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 10px rgba(255, 107, 53, 0.5);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>animation: pulse 2s infinite;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>@keyframes pulse {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>70% { box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-marker:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: scale(1.2);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>z-index: 10;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-popup {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>bottom: 40px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>left: 50%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateX(-50%);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0, 0, 0, 0.95);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 300px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>z-index: 100;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-popup h3 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.1em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-popup p {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.4;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.locations-list {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-card {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(145deg, #2a2a2a, #1f1f1f);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #444;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-card::before {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>content: '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>position: absolute;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>top: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>left: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>right: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>height: 3px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(90deg, #ff6b35, #ff8c42, #ff6b35);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-card:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(-5px);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 25px rgba(255, 107, 53, 0.2);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-title {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.3em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-type {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255, 107, 53, 0.2);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.8em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-story {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-features {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-top: 1px solid #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding-top: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.location-features h4 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.features-list {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.feature-tag {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255, 107, 53, 0.1);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 3px 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.8em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(255, 107, 53, 0.3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.loading {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 40px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.instructions {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(42, 42, 42, 0.8);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-left: 4px solid #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.instructions h3 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ff6b35;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.instructions p {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ccc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.5;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 768px) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.map-controls {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>flex-direction: column;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>align-items: stretch;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>.generate-btn {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>margin-left: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>.header h1 {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>font-size: 2em;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>.locations-list {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;<span class="s1">👻</span> AI Generated Haunted Map&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;Discover mysterious and haunted locations with AI-generated stories and paranormal activities&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="instructions"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;<span class="s1">🗺️</span> How to Use the Haunted Map&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Select your preferences below and click "Generate Locations" to populate the map with AI-generated haunted sites. Click on any marker to view the location's paranormal story and reported activities.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="map-controls"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Region:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="region"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="northeast"&gt;Northeast US&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="southeast"&gt;Southeast US&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="midwest"&gt;Midwest US&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="southwest"&gt;Southwest US&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="west"&gt;Western US&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="international"&gt;International&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Location Type:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="locationType"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mixed"&gt;All Types&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="cemetery"&gt;Cemeteries&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mansion"&gt;Historic Mansions&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="asylum"&gt;Abandoned Asylums&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="hotel"&gt;Haunted Hotels&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="battlefield"&gt;Battlefields&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="school"&gt;Schools &amp; Universities&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="theater"&gt;Theaters &amp; Opera Houses&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="prison"&gt;Prisons &amp; Jails&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Activity Level:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="activityLevel"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mixed"&gt;All Levels&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="mild"&gt;Mild Activity&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="moderate"&gt;Moderate Activity&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="intense"&gt;Intense Activity&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="control-group"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Number of Locations:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="locationCount"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="5"&gt;5 Locations&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="10"&gt;10 Locations&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="15"&gt;15 Locations&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="20"&gt;20 Locations&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="generate-btn" onclick="generateHauntedLocations()"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span><span class="s1">🎲</span> Generate Locations</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="map-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="interactive-map" id="hauntedMap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p style="font-size: 1.2em; margin-bottom: 10px;"&gt;<span class="s1">🗺️</span> Interactive Haunted Map&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p style="font-size: 0.9em;"&gt;Click "Generate Locations" to populate the map with haunted sites&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="locationsList" class="locations-list"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Generated locations will appear here --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Sample AI-generated haunted locations database</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const hauntedLocationsDB = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cemetery: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "Whispering Oaks Cemetery",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "Established in 1847, this Victorian-era cemetery is known for the mysterious woman in white who walks among the graves at midnight. Visitors report cold spots near the old mausoleums and the sound of children laughing near the family plots.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Cold Spots", "Apparitions", "EVP Activity", "Mysterious Lights"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "Shadowmere Memorial Gardens",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "This sprawling cemetery dating back to 1823 is home to the ghost of a Civil War soldier who still patrols the grounds. The sound of marching boots echoes through the paths, and visitors often see a figure in uniform standing by the war memorial.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Phantom Footsteps", "Military Apparitions", "Temperature Drops", "Electromagnetic Disturbances"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>mansion: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "Blackwood Manor",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "Built in 1889 by railroad baron Edmund Blackwood, this Gothic Revival mansion is said to be cursed by the tragic deaths of three generations of the family. Visitors report doors opening on their own, piano music from empty rooms, and the scent of roses in winter.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Moving Objects", "Phantom Music", "Unexplained Scents", "Shadow Figures"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>},</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "Ravencroft Estate",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "Once home to a prominent 19th-century judge, this Victorian mansion harbors dark secrets. The ghost of Judge Ravencroft is said to still hear cases in his study, and witnesses report the sound of a gavel striking wood in the dead of night.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Phantom Sounds", "Cold Drafts", "Electrical Disturbances", "Spectral Figures"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>asylum: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "Millfield Psychiatric Hospital",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "Abandoned in 1987, this former mental health facility is notorious for its dark history and ongoing paranormal activity. Visitors report hearing patients' voices echoing through empty corridors and seeing figures in hospital gowns wandering the halls.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Disembodied Voices", "Apparitions", "Medical Equipment Moving", "Overwhelming Sadness"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "intense"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>hotel: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>name: "The Grandview Hotel",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>story: "This 1920s luxury hotel has never closed its doors, but some guests never checked out. Room 237 is permanently unavailable due to reports of a woman in 1920s attire who appears in mirrors and rearranges guests' belongings.",</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>features: ["Mirror Apparitions", "Moving Objects", "Vintage Perfume Scent", "Elevator Malfunctions"],</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>activityLevel: "moderate"</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>]</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>let currentLocations = [];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let activePopup = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function generateHauntedLocations() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const region = document.getElementById('region').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const locationType = document.getElementById('locationType').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const activityLevel = document.getElementById('activityLevel').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const locationCount = parseInt(document.getElementById('locationCount').value);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Show loading</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('locationsList').innerHTML = '&lt;div class="loading"&gt;<span class="s1">🔮</span> AI is generating haunted locations...&lt;/div&gt;';</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>currentLocations = [];</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Generate locations based on selections</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const types = locationType === 'mixed' ? Object.keys(hauntedLocationsDB) : [locationType];</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>for (let i = 0; i &lt; locationCount; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const randomType = types[Math.floor(Math.random() * types.length)];</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const typeLocations = hauntedLocationsDB[randomType] || hauntedLocationsDB.cemetery;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const baseLocation = typeLocations[Math.floor(Math.random() * typeLocations.length)];</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>// Create variation of the base location</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const location = {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>id: i,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>name: generateVariationName(baseLocation.name, i),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>type: randomType,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>story: generateVariationStory(baseLocation.story, i),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>features: shuffleArray([...baseLocation.features]).slice(0, 3 + Math.floor(Math.random() * 2)),</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>activityLevel: activityLevel === 'mixed' ?<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                            </span>['mild', 'moderate', 'intense'][Math.floor(Math.random() * 3)] :<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                            </span>activityLevel,</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>x: Math.random() * 90 + 5, // 5-95% of map width</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>y: Math.random() * 80 + 10<span class="Apple-converted-space">  </span>// 10-90% of map height</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>};</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>currentLocations.push(location);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>displayLocationsOnMap();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>displayLocationsList();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}, 2000); // Simulate AI generation time</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function generateVariationName(baseName, index) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const prefixes = ['Old', 'Forgotten', 'Ancient', 'Cursed', 'Lost', 'Hidden', 'Abandoned', 'Mysterious'];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const suffixes = ['Heights', 'Hollow', 'Ridge', 'Grove', 'Point', 'Valley', 'Cross', 'Hill'];</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (Math.random() &lt; 0.3) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return baseName.replace(/^[\w\s]+/, prefix + ' ' + baseName.split(' ').slice(-1)[0]);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>return baseName;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function generateVariationStory(baseStory, index) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const variations = [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>baseStory,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/visitors report/gi, 'witnesses have experienced'),</p>
-<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/said to be/gi, 'believed to be'),</p>
-<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/ghost of/gi, 'spirit of'),</p>
-<p class="p1"><span class="Apple-converted-space">                </span>baseStory.replace(/mysterious/gi, 'unexplained')</p>
-<p class="p1"><span class="Apple-converted-space">            </span>];</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>return variations[index % variations.length];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function shuffleArray(array) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const shuffled = [...array];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>for (let i = shuffled.length - 1; i &gt; 0; i--) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const j = Math.floor(Math.random() * (i + 1));</p>
-<p class="p1"><span class="Apple-converted-space">                </span>[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return shuffled;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function displayLocationsOnMap() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const map = document.getElementById('hauntedMap');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>map.innerHTML = '';</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>currentLocations.forEach(location =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const marker = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>marker.className = 'location-marker';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>marker.style.left = location.x + '%';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>marker.style.top = location.y + '%';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>marker.innerHTML = '<span class="s1">👻</span>';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>marker.onclick = () =&gt; showLocationPopup(location, marker);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>map.appendChild(marker);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function showLocationPopup(location, marker) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Remove any existing popup</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const existingPopup = document.querySelector('.location-popup');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (existingPopup) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>existingPopup.remove();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const popup = document.createElement('div');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>popup.className = 'location-popup';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>popup.style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>popup.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3&gt;${location.name}&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;&lt;strong&gt;Type:&lt;/strong&gt; ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;&lt;strong&gt;Activity:&lt;/strong&gt; ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;${location.story.substring(0, 150)}...&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>marker.appendChild(popup);</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Remove popup after 5 seconds</p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (popup.parentNode) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>popup.remove();</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}, 5000);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function displayLocationsList() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const listContainer = document.getElementById('locationsList');</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>listContainer.innerHTML = currentLocations.map(location =&gt; `</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="location-card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-title"&gt;${location.name}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-type"&gt;${location.type.charAt(0).toUpperCase() + location.type.slice(1)} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-story"&gt;${location.story}&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="location-features"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h4&gt;Reported Paranormal Activity:&lt;/h4&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="features-list"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>${location.features.map(feature =&gt; `&lt;span class="feature-tag"&gt;${feature}&lt;/span&gt;`).join('')}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>`).join('');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Generate initial locations on page load</p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.addEventListener('load', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(generateHauntedLocations, 1000);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <div class="header">
+        <h1>👻 AI Generated Haunted Map</h1>
+        <p>Discover mysterious and haunted locations with AI-generated stories and paranormal activities</p>
+    </div>
+
+    <div class="container">
+        <div class="instructions">
+            <h3>🗺️ How to Use the Haunted Map</h3>
+            <p>Select your preferences below and click "Generate Locations" to populate the map with AI-generated haunted sites. Click on any marker to view the location's paranormal story and reported activities.</p>
+        </div>
+
+        <div class="map-controls">
+            <div class="control-group">
+                <label>Region:</label>
+                <select id="region">
+                    <option value="northeast">Northeast US</option>
+                    <option value="southeast">Southeast US</option>
+                    <option value="midwest">Midwest US</option>
+                    <option value="southwest">Southwest US</option>
+                    <option value="west">Western US</option>
+                    <option value="international">International</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Location Type:</label>
+                <select id="locationType">
+                    <option value="mixed">All Types</option>
+                    <option value="cemetery">Cemeteries</option>
+                    <option value="mansion">Historic Mansions</option>
+                    <option value="asylum">Abandoned Asylums</option>
+                    <option value="hotel">Haunted Hotels</option>
+                    <option value="battlefield">Battlefields</option>
+                    <option value="school">Schools & Universities</option>
+                    <option value="theater">Theaters & Opera Houses</option>
+                    <option value="prison">Prisons & Jails</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Activity Level:</label>
+                <select id="activityLevel">
+                    <option value="mixed">All Levels</option>
+                    <option value="mild">Mild Activity</option>
+                    <option value="moderate">Moderate Activity</option>
+                    <option value="intense">Intense Activity</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Number of Locations:</label>
+                <select id="locationCount">
+                    <option value="5">5 Locations</option>
+                    <option value="10">10 Locations</option>
+                    <option value="15">15 Locations</option>
+                    <option value="20">20 Locations</option>
+                </select>
+            </div>
+
+            <button class="generate-btn" onclick="generateHauntedLocations()">
+                🎲 Generate Locations
+            </button>
+        </div>
+
+        <div class="map-container">
+            <div class="interactive-map" id="hauntedMap">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
+                    <p style="font-size: 1.2em; margin-bottom: 10px;">🗺️ Interactive Haunted Map</p>
+                    <p style="font-size: 0.9em;">Click "Generate Locations" to populate the map with haunted sites</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="locationsList" class="locations-list">
+            <!-- Generated locations will appear here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample AI-generated haunted locations database
+        const hauntedLocationsDB = {
+            cemetery: [
+                {
+                    name: "Whispering Oaks Cemetery",
+                    story: "Established in 1847, this Victorian-era cemetery is known for the mysterious woman in white who walks among the graves at midnight. Visitors report cold spots near the old mausoleums and the sound of children laughing near the family plots.",
+                    features: ["Cold Spots", "Apparitions", "EVP Activity", "Mysterious Lights"],
+                    activityLevel: "moderate"
+                },
+                {
+                    name: "Shadowmere Memorial Gardens",
+                    story: "This sprawling cemetery dating back to 1823 is home to the ghost of a Civil War soldier who still patrols the grounds. The sound of marching boots echoes through the paths, and visitors often see a figure in uniform standing by the war memorial.",
+                    features: ["Phantom Footsteps", "Military Apparitions", "Temperature Drops", "Electromagnetic Disturbances"],
+                    activityLevel: "intense"
+                }
+            ],
+            mansion: [
+                {
+                    name: "Blackwood Manor",
+                    story: "Built in 1889 by railroad baron Edmund Blackwood, this Gothic Revival mansion is said to be cursed by the tragic deaths of three generations of the family. Visitors report doors opening on their own, piano music from empty rooms, and the scent of roses in winter.",
+                    features: ["Moving Objects", "Phantom Music", "Unexplained Scents", "Shadow Figures"],
+                    activityLevel: "intense"
+                },
+                {
+                    name: "Ravencroft Estate",
+                    story: "Once home to a prominent 19th-century judge, this Victorian mansion harbors dark secrets. The ghost of Judge Ravencroft is said to still hear cases in his study, and witnesses report the sound of a gavel striking wood in the dead of night.",
+                    features: ["Phantom Sounds", "Cold Drafts", "Electrical Disturbances", "Spectral Figures"],
+                    activityLevel: "moderate"
+                }
+            ],
+            asylum: [
+                {
+                    name: "Millfield Psychiatric Hospital",
+                    story: "Abandoned in 1987, this former mental health facility is notorious for its dark history and ongoing paranormal activity. Visitors report hearing patients' voices echoing through empty corridors and seeing figures in hospital gowns wandering the halls.",
+                    features: ["Disembodied Voices", "Apparitions", "Medical Equipment Moving", "Overwhelming Sadness"],
+                    activityLevel: "intense"
+                }
+            ],
+            hotel: [
+                {
+                    name: "The Grandview Hotel",
+                    story: "This 1920s luxury hotel has never closed its doors, but some guests never checked out. Room 237 is permanently unavailable due to reports of a woman in 1920s attire who appears in mirrors and rearranges guests' belongings.",
+                    features: ["Mirror Apparitions", "Moving Objects", "Vintage Perfume Scent", "Elevator Malfunctions"],
+                    activityLevel: "moderate"
+                }
+            ]
+        };
+
+        let currentLocations = [];
+        let activePopup = null;
+
+        function generateHauntedLocations() {
+            const region = document.getElementById('region').value;
+            const locationType = document.getElementById('locationType').value;
+            const activityLevel = document.getElementById('activityLevel').value;
+            const locationCount = parseInt(document.getElementById('locationCount').value);
+
+            // Show loading
+            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 AI is generating haunted locations...</div>';
+            
+            setTimeout(() => {
+                currentLocations = [];
+                
+                // Generate locations based on selections
+                const types = locationType === 'mixed' ? Object.keys(hauntedLocationsDB) : [locationType];
+                
+                for (let i = 0; i < locationCount; i++) {
+                    const randomType = types[Math.floor(Math.random() * types.length)];
+                    const typeLocations = hauntedLocationsDB[randomType] || hauntedLocationsDB.cemetery;
+                    const baseLocation = typeLocations[Math.floor(Math.random() * typeLocations.length)];
+                    
+                    // Create variation of the base location
+                    const location = {
+                        id: i,
+                        name: generateVariationName(baseLocation.name, i),
+                        type: randomType,
+                        story: generateVariationStory(baseLocation.story, i),
+                        features: shuffleArray([...baseLocation.features]).slice(0, 3 + Math.floor(Math.random() * 2)),
+                        activityLevel: activityLevel === 'mixed' ? 
+                            ['mild', 'moderate', 'intense'][Math.floor(Math.random() * 3)] : 
+                            activityLevel,
+                        x: Math.random() * 90 + 5, // 5-95% of map width
+                        y: Math.random() * 80 + 10  // 10-90% of map height
+                    };
+                    
+                    currentLocations.push(location);
+                }
+                
+                displayLocationsOnMap();
+                displayLocationsList();
+            }, 2000); // Simulate AI generation time
+        }
+
+        function generateVariationName(baseName, index) {
+            const prefixes = ['Old', 'Forgotten', 'Ancient', 'Cursed', 'Lost', 'Hidden', 'Abandoned', 'Mysterious'];
+            const suffixes = ['Heights', 'Hollow', 'Ridge', 'Grove', 'Point', 'Valley', 'Cross', 'Hill'];
+            
+            if (Math.random() < 0.3) {
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                return baseName.replace(/^[\w\s]+/, prefix + ' ' + baseName.split(' ').slice(-1)[0]);
+            }
+            
+            return baseName;
+        }
+
+        function generateVariationStory(baseStory, index) {
+            const variations = [
+                baseStory,
+                baseStory.replace(/visitors report/gi, 'witnesses have experienced'),
+                baseStory.replace(/said to be/gi, 'believed to be'),
+                baseStory.replace(/ghost of/gi, 'spirit of'),
+                baseStory.replace(/mysterious/gi, 'unexplained')
+            ];
+            
+            return variations[index % variations.length];
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function displayLocationsOnMap() {
+            const map = document.getElementById('hauntedMap');
+            map.innerHTML = '';
+            
+            currentLocations.forEach(location => {
+                const marker = document.createElement('div');
+                marker.className = 'location-marker';
+                marker.style.left = location.x + '%';
+                marker.style.top = location.y + '%';
+                marker.innerHTML = '👻';
+                marker.onclick = () => showLocationPopup(location, marker);
+                map.appendChild(marker);
+            });
+        }
+
+        function showLocationPopup(location, marker) {
+            // Remove any existing popup
+            const existingPopup = document.querySelector('.location-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+            
+            const popup = document.createElement('div');
+            popup.className = 'location-popup';
+            popup.style.display = 'block';
+            popup.innerHTML = `
+                <h3>${location.name}</h3>
+                <p><strong>Type:</strong> ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}</p>
+                <p><strong>Activity:</strong> ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}</p>
+                <p>${location.story.substring(0, 150)}...</p>
+            `;
+            
+            marker.appendChild(popup);
+            
+            // Remove popup after 5 seconds
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                }
+            }, 5000);
+        }
+
+        function displayLocationsList() {
+            const listContainer = document.getElementById('locationsList');
+            
+            listContainer.innerHTML = currentLocations.map(location => `
+                <div class="location-card">
+                    <div class="location-title">${location.name}</div>
+                    <div class="location-type">${location.type.charAt(0).toUpperCase() + location.type.slice(1)} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity</div>
+                    <div class="location-story">${location.story}</div>
+                    <div class="location-features">
+                        <h4>Reported Paranormal Activity:</h4>
+                        <div class="features-list">
+                            ${location.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate initial locations on page load
+        window.addEventListener('load', () => {
+            setTimeout(generateHauntedLocations, 1000);
+        });
+    </script>
 </body>
 </html>
