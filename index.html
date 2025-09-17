@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haunted Map - AI Generated Paranormal Locations</title>
+    <title>Haunted Map - Paranormal Locations</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    
     <style>
         * {
             margin: 0;
@@ -103,32 +107,34 @@
             overflow: hidden;
         }
 
-        .interactive-map {
+        #map {
             width: 100%;
             height: 500px;
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-            border: 2px solid #444;
             border-radius: 10px;
+            border: 2px solid #444;
             position: relative;
-            overflow: hidden;
-            cursor: crosshair;
+            z-index: 1;
         }
 
-        .location-marker {
-            position: absolute;
-            width: 30px;
-            height: 30px;
+        /* Dark theme for the map */
+        .leaflet-tile {
+            filter: brightness(0.3) contrast(1.5) saturate(0.8) hue-rotate(180deg);
+        }
+
+        /* Custom marker styles */
+        .haunted-marker {
             background: radial-gradient(circle, #ff6b35, #cc4a1a);
             border: 2px solid #fff;
             border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.5);
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.7);
             animation: pulse 2s infinite;
+            cursor: pointer;
         }
 
         @keyframes pulse {
@@ -137,35 +143,40 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
         }
 
-        .location-marker:hover {
-            transform: scale(1.2);
-            z-index: 10;
+        /* Custom popup styles */
+        .leaflet-popup-content-wrapper {
+            background: rgba(0, 0, 0, 0.95) !important;
+            border: 2px solid #ff6b35 !important;
+            border-radius: 10px !important;
+            color: #fff !important;
         }
 
-        .location-popup {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #ff6b35;
-            max-width: 300px;
-            display: none;
-            z-index: 100;
+        .leaflet-popup-content {
+            color: #fff !important;
+            margin: 15px !important;
         }
 
-        .location-popup h3 {
-            color: #ff6b35;
-            margin-bottom: 8px;
-            font-size: 1.1em;
+        .leaflet-popup-content h3 {
+            color: #ff6b35 !important;
+            margin-bottom: 8px !important;
+            font-size: 1.1em !important;
         }
 
-        .location-popup p {
-            color: #ccc;
-            font-size: 0.9em;
-            line-height: 1.4;
+        .leaflet-popup-content p {
+            color: #ccc !important;
+            font-size: 0.9em !important;
+            line-height: 1.4 !important;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(0, 0, 0, 0.95) !important;
+            border: 2px solid #ff6b35 !important;
+        }
+
+        .leaflet-popup-close-button {
+            color: #ff6b35 !important;
+            font-size: 18px !important;
+            font-weight: bold !important;
         }
 
         .locations-list {
@@ -276,6 +287,12 @@
             line-height: 1.5;
         }
 
+        .coordinates {
+            color: #aaa;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 768px) {
             .map-controls {
                 flex-direction: column;
@@ -298,14 +315,14 @@
 </head>
 <body>
     <div class="header">
-        <h1>👻 AI Generated Haunted Map</h1>
-        <p>Discover mysterious and haunted locations with AI-generated stories and paranormal activities</p>
+        <h1>👻 Haunted Map</h1>
+        <p>Discover mysterious and haunted locations with stories on real geographic maps</p>
     </div>
 
     <div class="container">
         <div class="instructions">
             <h3>🗺️ How to Use the Haunted Map</h3>
-            <p>Select your preferences below and click "Generate Locations" to populate the map with AI-generated haunted sites. Click on any marker to view the location's paranormal story and reported activities.</p>
+            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location's paranormal story and reported activities.</p>
         </div>
 
         <div class="map-controls">
@@ -317,7 +334,8 @@
                     <option value="midwest">Midwest US</option>
                     <option value="southwest">Southwest US</option>
                     <option value="west">Western US</option>
-                    <option value="international">International</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="europe">Europe</option>
                 </select>
             </div>
 
@@ -362,12 +380,7 @@
         </div>
 
         <div class="map-container">
-            <div class="interactive-map" id="hauntedMap">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666;">
-                    <p style="font-size: 1.2em; margin-bottom: 10px;">🗺️ Interactive Haunted Map</p>
-                    <p style="font-size: 0.9em;">Click "Generate Locations" to populate the map with haunted sites</p>
-                </div>
-            </div>
+            <div id="map"></div>
         </div>
 
         <div id="locationsList" class="locations-list">
@@ -375,8 +388,34 @@
         </div>
     </div>
 
+    <!-- Leaflet JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
     <script>
-        // Sample AI-generated haunted locations database
+        // Initialize the map
+        let map = L.map('map').setView([39.8283, -98.5795], 5); // Center of USA
+
+        // Add dark-themed tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Store markers for clearing
+        let markersGroup = L.layerGroup().addTo(map);
+
+        // Regional coordinates
+        const regionCoords = {
+            northeast: { center: [42.0, -73.0], zoom: 6 },
+            southeast: { center: [33.0, -82.0], zoom: 6 },
+            midwest: { center: [41.0, -93.0], zoom: 5 },
+            southwest: { center: [34.0, -108.0], zoom: 5 },
+            west: { center: [40.0, -120.0], zoom: 5 },
+            uk: { center: [54.5, -3.0], zoom: 6 },
+            europe: { center: [50.0, 10.0], zoom: 4 }
+        };
+
+        // Sample AI-generated haunted locations database with real coordinates
         const hauntedLocationsDB = {
             cemetery: [
                 {
@@ -390,6 +429,12 @@
                     story: "This sprawling cemetery dating back to 1823 is home to the ghost of a Civil War soldier who still patrols the grounds. The sound of marching boots echoes through the paths, and visitors often see a figure in uniform standing by the war memorial.",
                     features: ["Phantom Footsteps", "Military Apparitions", "Temperature Drops", "Electromagnetic Disturbances"],
                     activityLevel: "intense"
+                },
+                {
+                    name: "Restwood Cemetery",
+                    story: "A small family cemetery from the 1800s where unexplained orbs of light dance between the headstones. Locals report hearing funeral bells ring at 3 AM, though no church bells exist for miles around.",
+                    features: ["Orb Activity", "Phantom Bells", "Electromagnetic Anomalies", "Time Distortions"],
+                    activityLevel: "mild"
                 }
             ],
             mansion: [
@@ -404,6 +449,12 @@
                     story: "Once home to a prominent 19th-century judge, this Victorian mansion harbors dark secrets. The ghost of Judge Ravencroft is said to still hear cases in his study, and witnesses report the sound of a gavel striking wood in the dead of night.",
                     features: ["Phantom Sounds", "Cold Drafts", "Electrical Disturbances", "Spectral Figures"],
                     activityLevel: "moderate"
+                },
+                {
+                    name: "Thornfield House",
+                    story: "This antebellum mansion was abandoned after a mysterious fire in 1923. Visitors report seeing lights in the windows and hearing party music from the ballroom, as if the final celebration never ended.",
+                    features: ["Phantom Lights", "Residual Hauntings", "Period Music", "Apparitions in Period Dress"],
+                    activityLevel: "moderate"
                 }
             ],
             asylum: [
@@ -411,6 +462,12 @@
                     name: "Millfield Psychiatric Hospital",
                     story: "Abandoned in 1987, this former mental health facility is notorious for its dark history and ongoing paranormal activity. Visitors report hearing patients' voices echoing through empty corridors and seeing figures in hospital gowns wandering the halls.",
                     features: ["Disembodied Voices", "Apparitions", "Medical Equipment Moving", "Overwhelming Sadness"],
+                    activityLevel: "intense"
+                },
+                {
+                    name: "Crescent Hills Sanitarium",
+                    story: "Built in 1904 to treat tuberculosis patients, this abandoned sanitarium is known for its ghostly residents who never left. The sound of wheelchairs rolling down empty halls and coughing fits echo through the building.",
+                    features: ["Phantom Wheelchairs", "Residual Sounds", "Cold Spots", "Electrical Disturbances"],
                     activityLevel: "intense"
                 }
             ],
@@ -420,18 +477,62 @@
                     story: "This 1920s luxury hotel has never closed its doors, but some guests never checked out. Room 237 is permanently unavailable due to reports of a woman in 1920s attire who appears in mirrors and rearranges guests' belongings.",
                     features: ["Mirror Apparitions", "Moving Objects", "Vintage Perfume Scent", "Elevator Malfunctions"],
                     activityLevel: "moderate"
+                },
+                {
+                    name: "The Winchester Inn",
+                    story: "A historic coaching inn dating back to 1765, where travelers report sharing their rooms with previous guests from centuries past. The ghost of a stagecoach driver still announces arrivals at midnight.",
+                    features: ["Phantom Announcements", "Period Apparitions", "Cold Drafts", "Historical Reenactment"],
+                    activityLevel: "mild"
+                }
+            ],
+            battlefield: [
+                {
+                    name: "Bloody Creek Battlefield",
+                    story: "Site of a brutal Civil War skirmish in 1863, where over 200 soldiers lost their lives in a single day. Visitors report hearing musket fire and battle cries, and seeing uniformed figures marching across the field at dawn.",
+                    features: ["Battle Sounds", "Military Apparitions", "Residual Energy", "Historical Imprints"],
+                    activityLevel: "intense"
+                }
+            ],
+            school: [
+                {
+                    name: "Riverside Elementary",
+                    story: "Closed in 1995 after declining enrollment, this old school building echoes with the laughter and voices of children who once learned here. Teachers report seeing students in their classrooms and hearing the school bell ring.",
+                    features: ["Children's Voices", "Phantom School Bells", "Classroom Activity", "Playful Spirits"],
+                    activityLevel: "mild"
+                }
+            ],
+            theater: [
+                {
+                    name: "The Majestic Opera House",
+                    story: "Built in 1898, this grand theater is home to 'The Lady in Red,' a former actress who died on opening night. She still takes her bow during performances, and actors report receiving flowers from empty seats.",
+                    features: ["Phantom Actress", "Mysterious Flowers", "Curtain Movement", "Spotlight Activity"],
+                    activityLevel: "moderate"
+                }
+            ],
+            prison: [
+                {
+                    name: "Irongate Penitentiary",
+                    story: "Operational from 1876 to 1963, this former prison housed some of the most notorious criminals of its era. Guard tours report cell doors slamming shut, keys rattling, and the sound of chains dragging across floors.",
+                    features: ["Slamming Doors", "Phantom Keys", "Chain Sounds", "Oppressive Atmosphere"],
+                    activityLevel: "intense"
                 }
             ]
         };
 
         let currentLocations = [];
-        let activePopup = null;
 
         function generateHauntedLocations() {
             const region = document.getElementById('region').value;
             const locationType = document.getElementById('locationType').value;
             const activityLevel = document.getElementById('activityLevel').value;
             const locationCount = parseInt(document.getElementById('locationCount').value);
+
+            // Clear existing markers
+            markersGroup.clearLayers();
+
+            // Move map to selected region
+            const regionData = regionCoords[region];
+            map.setView(regionData.center, regionData.zoom);
 
             // Show loading
             document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 AI is generating haunted locations...</div>';
@@ -447,6 +548,9 @@
                     const typeLocations = hauntedLocationsDB[randomType] || hauntedLocationsDB.cemetery;
                     const baseLocation = typeLocations[Math.floor(Math.random() * typeLocations.length)];
                     
+                    // Generate coordinates within the selected region
+                    const coords = generateRegionalCoordinates(region);
+                    
                     // Create variation of the base location
                     const location = {
                         id: i,
@@ -457,8 +561,8 @@
                         activityLevel: activityLevel === 'mixed' ? 
                             ['mild', 'moderate', 'intense'][Math.floor(Math.random() * 3)] : 
                             activityLevel,
-                        x: Math.random() * 90 + 5, // 5-95% of map width
-                        y: Math.random() * 80 + 10  // 10-90% of map height
+                        lat: coords.lat,
+                        lng: coords.lng
                     };
                     
                     currentLocations.push(location);
@@ -467,6 +571,24 @@
                 displayLocationsOnMap();
                 displayLocationsList();
             }, 2000); // Simulate AI generation time
+        }
+
+        function generateRegionalCoordinates(region) {
+            const bounds = {
+                northeast: { latMin: 40.0, latMax: 47.0, lngMin: -80.0, lngMax: -67.0 },
+                southeast: { latMin: 25.0, latMax: 39.0, lngMin: -90.0, lngMax: -75.0 },
+                midwest: { latMin: 35.0, latMax: 49.0, lngMin: -104.0, lngMax: -82.0 },
+                southwest: { latMin: 25.0, latMax: 42.0, lngMin: -125.0, lngMax: -94.0 },
+                west: { latMin: 32.0, latMax: 49.0, lngMin: -125.0, lngMax: -102.0 },
+                uk: { latMin: 50.0, latMax: 59.0, lngMin: -8.0, lngMax: 2.0 },
+                europe: { latMin: 35.0, latMax: 70.0, lngMin: -10.0, lngMax: 40.0 }
+            };
+
+            const bound = bounds[region];
+            return {
+                lat: Math.random() * (bound.latMax - bound.latMin) + bound.latMin,
+                lng: Math.random() * (bound.lngMax - bound.lngMin) + bound.lngMin
+            };
         }
 
         function generateVariationName(baseName, index) {
@@ -503,45 +625,34 @@
         }
 
         function displayLocationsOnMap() {
-            const map = document.getElementById('hauntedMap');
-            map.innerHTML = '';
-            
             currentLocations.forEach(location => {
-                const marker = document.createElement('div');
-                marker.className = 'location-marker';
-                marker.style.left = location.x + '%';
-                marker.style.top = location.y + '%';
-                marker.innerHTML = '👻';
-                marker.onclick = () => showLocationPopup(location, marker);
-                map.appendChild(marker);
-            });
-        }
+                // Create custom icon
+                const hauntedIcon = L.divIcon({
+                    className: 'haunted-marker',
+                    html: '👻',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
 
-        function showLocationPopup(location, marker) {
-            // Remove any existing popup
-            const existingPopup = document.querySelector('.location-popup');
-            if (existingPopup) {
-                existingPopup.remove();
-            }
-            
-            const popup = document.createElement('div');
-            popup.className = 'location-popup';
-            popup.style.display = 'block';
-            popup.innerHTML = `
-                <h3>${location.name}</h3>
-                <p><strong>Type:</strong> ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}</p>
-                <p><strong>Activity:</strong> ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}</p>
-                <p>${location.story.substring(0, 150)}...</p>
-            `;
-            
-            marker.appendChild(popup);
-            
-            // Remove popup after 5 seconds
-            setTimeout(() => {
-                if (popup.parentNode) {
-                    popup.remove();
-                }
-            }, 5000);
+                // Create marker
+                const marker = L.marker([location.lat, location.lng], {
+                    icon: hauntedIcon
+                }).addTo(markersGroup);
+
+                // Create popup content
+                const popupContent = `
+                    <h3>${location.name}</h3>
+                    <p><strong>Type:</strong> ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}</p>
+                    <p><strong>Activity:</strong> ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}</p>
+                    <p><strong>Coordinates:</strong> ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</p>
+                    <p>${location.story.substring(0, 150)}...</p>
+                `;
+
+                marker.bindPopup(popupContent, {
+                    maxWidth: 300,
+                    className: 'haunted-popup'
+                });
+            });
         }
 
         function displayLocationsList() {
@@ -550,6 +661,7 @@
             listContainer.innerHTML = currentLocations.map(location => `
                 <div class="location-card">
                     <div class="location-title">${location.name}</div>
+                    <div class="coordinates">📍 ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</div>
                     <div class="location-type">${location.type.charAt(0).toUpperCase() + location.type.slice(1)} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity</div>
                     <div class="location-story">${location.story}</div>
                     <div class="location-features">
