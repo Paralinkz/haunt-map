@@ -5,7 +5,7 @@ An interactive web application that generates mysterious and haunted locations w
 ## 🌟 Features
 
 - **Interactive Map Interface**: Click and explore haunted locations on a visual map
-- **AI-Generated Content**: Each location features unique paranormal stories and activities
+- **Generated Content**: Each location features unique paranormal stories and activities
 - **Customizable Filters**: Choose by region, location type, and paranormal activity level
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
 - **Atmospheric Theme**: Dark, spooky design that sets the perfect paranormal mood
@@ -14,7 +14,7 @@ An interactive web application that generates mysterious and haunted locations w
 
 1. **Select Your Preferences**:
    - Choose a region (Northeast US, Southeast US, etc.)
-   - Pick location types (Cemeteries, Historical, Attractions, etc.)
+   - Pick location types (Attractions, Cemeteries, Historical, etc.)
    - Set activity level (Mild, Moderate, or Intense)
    - Choose number of locations (10-50)
 
