@@ -293,6 +293,29 @@
             margin-bottom: 10px;
         }
 
+        .activity-high { border-left: 5px solid #ff4444; }
+        .activity-moderate { border-left: 5px solid #ffaa44; }
+        .activity-low { border-left: 5px solid #44ff44; }
+
+        .statistics {
+            background: rgba(42, 42, 42, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: #ff6b35;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .map-controls {
                 flex-direction: column;
@@ -310,6 +333,11 @@
             .locations-list {
                 grid-template-columns: 1fr;
             }
+
+            .statistics {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -322,59 +350,124 @@
     <div class="container">
         <div class="instructions">
             <h3>🗺️ How to Use the Haunted Map</h3>
-            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location its details.</p>
+            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>35 documented haunted locations</strong> in Alabama!</p>
+        </div>
+
+        <div class="statistics">
+            <div class="stat-item">
+                <div class="stat-number" id="totalLocations">35</div>
+                <div>Total Locations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="highActivity">12</div>
+                <div>High Activity</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="displayedCount">0</div>
+                <div>Currently Displayed</div>
+            </div>
         </div>
 
         <div class="map-controls">
             <div class="control-group">
-                <label>Region:</label>
-                <select id="region">
-                    <option value="northeast">Northeast US</option>
-                    <option value="southeast">Southeast US</option>
-                    <option value="midwest">Midwest US</option>
-                    <option value="southwest">Southwest US</option>
-                    <option value="west">Western US</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="europe">Europe</option>
+                <label>State:</label>
+                <select id="stateFilter">
+                    <option value="">All States</option>
+                    <option value="AL" selected>Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NB">Nebraska</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="PR">Puerto Rico</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                    <!-- Add more states as needed -->
                 </select>
             </div>
 
             <div class="control-group">
                 <label>Location Type:</label>
                 <select id="locationType">
-                    <option value="mixed">All Types</option>
-                    <option value="battlefield">Battlefields</option>         
-                    <option value="cemetery">Cemeteries</option>
-                    <option value="towns">Ghost Towns</option>
-                    <option value="hotel">Haunted Hotels</option>                    
-                    <option value="mansion">Historic Locations</option>
- 
+                    <option value="">All Types</option>
+                    <option value="Cemetery">Cemeteries</option>
+                    <option value="Church">Churches</option>
+                    <option value="College">Colleges</option>
+                    <option value="Ghost Town">Ghost Towns</option>
+                    <option value="Historic House">Historic Houses</option>
+                    <option value="Hotel">Hotels</option>
+                    <option value="Industrial Site">Industrial Sites</option>
+                    <option value="Military Site">Military Sites</option>
+                    <option value="Restaurant">Restaurants</option>
+                    <option value="Theater">Theaters</option>
                 </select>
             </div>
 
             <div class="control-group">
                 <label>Activity Level:</label>
                 <select id="activityLevel">
-                    <option value="mixed">All Levels</option>
-                    <option value="mild">Mild Activity</option>
+                    <option value="">All Levels</option>
+                    <option value="low">Low Activity</option>
                     <option value="moderate">Moderate Activity</option>
-                    <option value="intense">Intense Activity</option>
+                    <option value="high">High Activity</option>
                 </select>
             </div>
 
             <div class="control-group">
-                <label>Number of Locations:</label>
-                <select id="locationCount">
-                    <option value="10">10 Locations</option>
-                    <option value="20">20 Locations</option>
-                    <option value="30">30 Locations</option>
-                    <option value="40">40 Locations</option>
-                    <option value="50">50 Locations</option>
+                <label>Sort By:</label>
+                <select id="sortOrder">
+                    <option value="alphabetical">Alphabetical (A-Z)</option>
+                    <option value="alphabetical-desc">Alphabetical (Z-A)</option>
+                    <option value="activity">Activity Level</option>
+                    <option value="year">Year Established</option>
+                    <option value="type">Location Type</option>
+                    <option value="city">City Name</option>
                 </select>
             </div>
 
-            <button class="generate-btn" onclick="generateHauntedLocations()">
-                🎲 Generate Locations
+            <button class="generate-btn" onclick="filterAndDisplayLocations()">
+                🎲 Apply Filters
             </button>
         </div>
 
@@ -391,8 +484,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     
     <script>
-        // Initialize the map
-        let map = L.map('map').setView([39.8283, -98.5795], 5); // Center of USA
+        // Initialize the map - Center on Alabama initially
+        let map = L.map('map').setView([32.806671, -86.79113], 7);
 
         // Add dark-themed tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -403,229 +496,566 @@
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
 
-        // Regional coordinates
-        const regionCoords = {
-            northeast: { center: [42.0, -73.0], zoom: 6 },
-            southeast: { center: [33.0, -82.0], zoom: 6 },
-            midwest: { center: [41.0, -93.0], zoom: 5 },
-            southwest: { center: [34.0, -108.0], zoom: 5 },
-            west: { center: [40.0, -120.0], zoom: 5 },
-            uk: { center: [54.5, -3.0], zoom: 6 },
-            europe: { center: [50.0, 10.0], zoom: 4 }
+        // Optimized haunted locations database - Alabama locations
+        const hauntedLocations = [
+            // Major Haunted Locations
+            {
+                id: "al001",
+                state: "AL",
+                name: "Sloss Furnaces",
+                city: "Birmingham",
+                coordinates: [33.5186, -86.8025],
+                story: "Former iron-producing facility where harsh working conditions led to numerous fatal accidents. James 'Slag' Wormwood, a brutal foreman, pushed workers to dangerous limits until 47 died under his watch. After his mysterious disappearance in 1906, workers reported being pushed by invisible hands and hearing a burned figure shouting 'get back to work.'",
+                features: ["Disembodied Voices", "Physical Pushing", "Apparitions", "Extreme Cold Spots"],
+                activityLevel: "high",
+                yearEstablished: 1882,
+                type: "Industrial Site"
+            },
+            {
+                id: "al002",
+                state: "AL",
+                name: "The Drish House",
+                city: "Tuscaloosa",
+                coordinates: [33.2098, -87.5692],
+                story: "Antebellum mansion where Dr. John R. Drish died from a drunken fall in 1867. His widow Sarah became obsessed with preserving his funeral candles for her own ceremony, but when she died in 1884, the candles couldn't be found. Her enraged spirit haunts the house, even lighting phantom candles that have caused fires in the tower.",
+                features: ["Phantom Fires", "Ghostly Lights", "Apparitions", "Cold Spots"],
+                activityLevel: "high",
+                yearEstablished: 1837,
+                type: "Historic House"
+            },
+            {
+                id: "al003",
+                state: "AL",
+                name: "Dead Children's Playground",
+                city: "Huntsville",
+                coordinates: [34.7304, -86.5861],
+                story: "Playground within Maple Hill Cemetery where children who died during the 1918 Spanish flu epidemic are buried. The playground gained its eerie nickname from locals who report supernatural activity between 10 PM and 3 AM, with children's spirits returning to play on the swings and equipment.",
+                features: ["Self-Moving Swings", "Children's Laughter", "Orbs in Photos", "Disembodied Voices"],
+                activityLevel: "high",
+                yearEstablished: 1822,
+                type: "Cemetery"
+            },
+            {
+                id: "al004",
+                state: "AL",
+                name: "Fort Morgan",
+                city: "Gulf Shores",
+                coordinates: [30.2297, -88.0209],
+                story: "This historic coastal fort witnessed the bloody Battle of Mobile Bay during the Civil War and served through both World Wars. The spirits of soldiers who died defending this strategic position linger in the barracks and corridors. Visitors report hearing anguished cries of fallen men and seeing a mysterious woman searching for justice.",
+                features: ["Military Apparitions", "Disembodied Screams", "Cold Spots", "Shadow Figures"],
+                activityLevel: "moderate",
+                yearEstablished: 1819,
+                type: "Military Site"
+            },
+            {
+                id: "al005",
+                state: "AL",
+                name: "Gaines Ridge Dinner Club",
+                city: "Camden",
+                coordinates: [31.9929, -87.2892],
+                story: "Operating in an 1820s antebellum home, this restaurant is known as 'Alabama's Most Haunted Restaurant.' The historic mansion houses an entire family of spirits who make their presence known through various manifestations. Diners frequently experience unexplained phenomena while enjoying their meals.",
+                features: ["Apparitions in Mirrors", "Phantom Baby Cries", "Pipe Smoke Aromas", "Floating Women"],
+                activityLevel: "moderate",
+                yearEstablished: 1820,
+                type: "Restaurant"
+            },
+            {
+                id: "al006",
+                state: "AL",
+                name: "USS Alabama Battleship",
+                city: "Mobile",
+                coordinates: [30.6818, -88.0148],
+                story: "This 680-foot WWII battleship serves as both a museum and home to restless spirits. The vessel was completed in 1942 and served three years without enemy casualties, but tragic accidents during construction and friendly fire incidents claimed lives. Eight crewmen died in a devastating friendly-fire accident.",
+                features: ["Military Spirits", "Cold Spots", "Disembodied Voices", "Equipment Malfunctions"],
+                activityLevel: "moderate",
+                yearEstablished: 1942,
+                type: "Military Site"
+            },
+            {
+                id: "al007",
+                state: "AL",
+                name: "St. James Hotel",
+                city: "Selma",
+                coordinates: [32.4074, -87.0211],
+                story: "Built in 1837, this historic hotel served as Union headquarters during the Civil War and later hosted infamous outlaw Jesse James and his gang in 1881. After closing for nearly 100 years, it reopened in 1997 with its ghostly residents intact. Jesse appears in his signature cowboy attire while his girlfriend Lucinda leaves the scent of lavender perfume.",
+                features: ["Outlaw Apparitions", "Lavender Scents", "Ghost Dog Barking", "1800s Period Spirits"],
+                activityLevel: "high",
+                yearEstablished: 1837,
+                type: "Hotel"
+            },
+            {
+                id: "al008",
+                state: "AL",
+                name: "Old Cahawba Ghost Town",
+                city: "Orrville",
+                coordinates: [32.3082, -87.1150],
+                story: "Once Alabama's first state capital from 1820-1825, this thriving river town was abandoned after repeated flooding and economic collapse. Built atop a 16th-century Mississippian Indian village, the site contains layers of tragic history including a Confederate prison camp known as Castle Morgan.",
+                features: ["Disembodied Voices", "Children's Laughter", "Historical Apparitions", "Ancient Spiritual Energy"],
+                activityLevel: "moderate",
+                yearEstablished: 1820,
+                type: "Ghost Town"
+            },
+            {
+                id: "al009",
+                state: "AL",
+                name: "The Boyington Oak",
+                city: "Mobile",
+                coordinates: [30.6944, -88.0444],
+                story: "This massive Southern live oak grew from the grave of Charles Boyington, who was wrongfully executed for murder in 1835. Before his hanging, Boyington declared that an oak tree would spring from his grave as proof of his innocence. The tree fulfilled his prophecy, and visitors report seeing his spirit sitting beneath its branches.",
+                features: ["Tree Spirit Manifestations", "Wrongful Death Energy", "Apparitions Under Oak", "Historical Injustice"],
+                activityLevel: "moderate",
+                yearEstablished: 1835,
+                type: "Cemetery"
+            },
+            {
+                id: "al010",
+                state: "AL",
+                name: "Pratt Hall - Huntingdon College",
+                city: "Montgomery",
+                coordinates: [32.3617, -86.3009],
+                story: "In the early 20th century, when Huntingdon was still the Woman's College of Alabama, a lonely student named Martha struggled with depression and isolation. After her only friend moved away, Martha was found dead in her fourth-floor room, dressed in her red robe. Her spirit, known as the Red Lady, continues to haunt Pratt Hall.",
+                features: ["Red Lady Apparition", "Glowing Red Lights", "Tragic Student Spirit", "Dormitory Hauntings"],
+                activityLevel: "high",
+                yearEstablished: 1854,
+                type: "College"
+            },
+            {
+                id: "al011",
+                state: "AL",
+                name: "The Redmont Hotel",
+                city: "Birmingham",
+                coordinates: [33.5186, -86.8025],
+                story: "Birmingham's oldest active hotel, operating since 1925, houses multiple spirits within its historic walls. Country music legend Hank Williams spent his final night here in 1952 before his tragic death, and his spirit reportedly lingers in the penthouse. The hotel is also haunted by former owner Clifford Stiles and a mysterious woman in white.",
+                features: ["Celebrity Ghost", "Woman in White", "Ghost Dog", "Moving Furniture"],
+                activityLevel: "moderate",
+                yearEstablished: 1925,
+                type: "Hotel"
+            },
+            {
+                id: "al012",
+                state: "AL",
+                name: "The Tutwiler Hotel",
+                city: "Birmingham",
+                coordinates: [33.5186, -86.8025],
+                story: "This Birmingham landmark is home to a playful yet mischievous spirit known as 'The Knocker,' believed to be Colonel Tutwiler himself. The ghost delights in knocking on guest room doors throughout the night, turning lights and appliances on and off, and occasionally preparing elaborate meals in the kitchen.",
+                features: ["Door Knocking", "Light Manipulation", "Kitchen Activity", "Polite Ghost Interactions"],
+                activityLevel: "moderate",
+                yearEstablished: 1914,
+                type: "Hotel"
+            },
+            {
+                id: "al013",
+                state: "AL",
+                name: "Alabama Theatre",
+                city: "Birmingham",
+                coordinates: [33.5186, -86.8025],
+                story: "Built in 1927 as a showcase for silent films, this ornate theater harbors the spirits of those who died during its construction and operation. A construction worker who fell to his death from the balcony still haunts that area, while a mysterious Lady in Black vanishes into walls in the lobby.",
+                features: ["Construction Worker Spirit", "Lady in Black", "Musician Ghost", "Phantom Touches"],
+                activityLevel: "moderate",
+                yearEstablished: 1927,
+                type: "Theater"
+            },
+            {
+                id: "al014",
+                state: "AL",
+                name: "Lucas Tavern",
+                city: "Montgomery",
+                coordinates: [32.3617, -86.3009],
+                story: "Operating from 1820-1840 as an upscale travelers' inn, this establishment was run by the gracious Eliza Lucas. After being restored in 1980 as part of Old Alabama Town, Eliza's benevolent spirit returned to continue her hostess duties. She's known to express disapproval of bad manners by blasting ash and smoke at rude visitors.",
+                features: ["Benevolent Hostess Spirit", "Victorian Apparition", "Polite Ghost Interactions", "Southern Hospitality"],
+                activityLevel: "low",
+                yearEstablished: 1820,
+                type: "Historic House"
+            },
+            {
+                id: "al015",
+                state: "AL",
+                name: "Jack Cole Road",
+                city: "Hayden",
+                coordinates: [33.8940, -86.7656],
+                story: "This half-mile stretch of unpaved road has witnessed 68 deaths since 1890, including 60 victims of a cholera outbreak at a hospital that once stood here in 1900. The remaining eight deaths were due to mysterious murders and unexplained circumstances. Most disturbing are glimpses of a deformed creature described as half-wolf, half-man.",
+                features: ["Disease Victim Spirits", "Mysterious Lights", "Cryptid Sightings", "Murder Victim Ghosts"],
+                activityLevel: "high",
+                yearEstablished: 1890,
+                type: "Road"
+            },
+            
+            // Cemetery Locations
+            {
+                id: "al016",
+                state: "AL",
+                name: "Maple Hill Cemetery",
+                city: "Huntsville",
+                coordinates: [34.7304, -86.5861],
+                story: "Established in 1822, this 100-acre cemetery is Alabama's oldest and largest, serving as the final resting place for over 80,000 souls. During the Civil War, it became the burial ground for 187 unknown Confederate soldiers and numerous Union troops. The 1918 Spanish flu epidemic added thousands more, many of whom were children.",
+                features: ["Children's Laughter", "Self-Moving Swings", "Civil War Spirits", "Orbs in Photos"],
+                activityLevel: "high",
+                yearEstablished: 1822,
+                type: "Cemetery"
+            },
+            {
+                id: "al017",
+                state: "AL",
+                name: "Adams Grove Cemetery",
+                city: "Sardis",
+                coordinates: [32.1232, -85.4869],
+                story: "Located next to the historic Adams Grove Presbyterian Church built in 1853, this cemetery is considered one of Alabama's most haunted burial grounds. Dating back to the 1800s, it serves as the final resting place for Confederate soldiers, enslaved people, and local citizens. The cemetery is terrorized by a shadowy figure with fiery red eyes.",
+                features: ["Red-Eyed Shadow Figure", "Baby Crying", "Confederate Soldier Spirits", "Day and Night Activity"],
+                activityLevel: "high",
+                yearEstablished: 1853,
+                type: "Cemetery"
+            },
+            {
+                id: "al018",
+                state: "AL",
+                name: "Bass Cemetery",
+                city: "Irondale",
+                coordinates: [33.5342, -86.6769],
+                story: "Located near Ruffner Road, this 150-200 year old cemetery is one of the Birmingham area's oldest burial grounds. The oldest known grave belongs to Burwell Bass, a Revolutionary War soldier who died in 1831. Also buried here is Montezuma Goodwin, a farmer murdered by his brother-in-law in 1904.",
+                features: ["Unexplained Screams", "Revolutionary War Spirits", "Floating Orbs", "Mysterious Mists"],
+                activityLevel: "moderate",
+                yearEstablished: 1831,
+                type: "Cemetery"
+            },
+            {
+                id: "al019",
+                state: "AL",
+                name: "Church Street Graveyard",
+                city: "Mobile",
+                coordinates: [30.6944, -88.0444],
+                story: "This historic Mobile cemetery is home to the famous Boyington Oak, a massive Southern live oak that grew from Charles Boyington's grave after his wrongful execution for murder in 1835. Phantom cries and whispers emanate from the area around the ancient oak, where his spirit seeks eternal vindication.",
+                features: ["Tree Spirit Manifestations", "Phantom Cries", "Wrongful Death Energy", "Historical Injustice"],
+                activityLevel: "moderate",
+                yearEstablished: 1835,
+                type: "Cemetery"
+            },
+            {
+                id: "al020",
+                state: "AL",
+                name: "Old Live Oak Cemetery",
+                city: "Selma",
+                coordinates: [32.4074, -87.0211],
+                story: "Founded in 1829 in historic Selma, this moss-draped cemetery serves as the final resting place for numerous Civil War soldiers and prominent town members, including Benjamin Sterling Turner, the first Black U.S. Representative for Alabama during Reconstruction. The cemetery expanded significantly after the Civil War.",
+                features: ["Civil War Spirits", "Spanish Moss Apparitions", "Historical Figures", "Post-War Expansion Ghosts"],
+                activityLevel: "moderate",
+                yearEstablished: 1829,
+                type: "Cemetery"
+            },
+            {
+                id: "al021",
+                state: "AL",
+                name: "Oak Hill Cemetery",
+                city: "Birmingham",
+                coordinates: [33.5186, -86.8025],
+                story: "Located in Birmingham with a stunning view of the city skyline, this historic cemetery houses the grave of John T. Milner, the railroad engineer whose projects paved the way for Birmingham's development. The cemetery is home to the mysterious Erswell Vault, where visitors report hearing whispers and mutterings from Catherine Erswell.",
+                features: ["Vault Whispers", "City Builder Spirits", "Mutterings from Tombs", "Railroad Pioneer Ghost"],
+                activityLevel: "moderate",
+                yearEstablished: 1869,
+                type: "Cemetery"
+            },
+            {
+                id: "al022",
+                state: "AL",
+                name: "Clearwater Cemetery",
+                city: "Wagarville",
+                coordinates: [31.3182, -87.0350],
+                story: "This cemetery is haunted by a ghostly white lady who appears on the dirt road outside the gates between midnight and 3 AM. Local legend tells of an unidentified woman who was brutally assaulted and murdered either in the cemetery or on the road many years ago. Her restless spirit now appears to travelers seeking justice.",
+                features: ["White Lady Apparition", "Midnight to 3AM Activity", "Murder Victim Spirit", "Road Hauntings"],
+                activityLevel: "high",
+                yearEstablished: 1800,
+                type: "Cemetery"
+            },
+            {
+                id: "al023",
+                state: "AL",
+                name: "Hodges Cemetery",
+                city: "Gardendale",
+                coordinates: [33.6551, -86.8119],
+                story: "This remote cemetery is notorious for terrorizing motorists who pass by. Drivers report objects banging against their cars, ghostly hands or faces appearing on windows, and being chased by a wolf with glowing red eyes accompanied by a mysterious glowing light. Shadowy figures dart between tombstones.",
+                features: ["Vehicle Harassment", "Glowing Red-Eyed Wolf", "Moving Tombstones", "Shadow Figure Activity"],
+                activityLevel: "high",
+                yearEstablished: 1850,
+                type: "Cemetery"
+            },
+            {
+                id: "al024",
+                state: "AL",
+                name: "Gallant Children's Cemetery",
+                city: "Gallant",
+                coordinates: [34.1184, -86.2011],
+                story: "This small cemetery is dedicated to children and is said to be haunted by friendly child spirits who come out to play with each other late at night. Despite their cheerful nature, visitors report having their hair pulled, experiencing sudden sickness, and being pushed by invisible hands.",
+                features: ["Friendly Child Spirits", "Physical Interactions", "Tree Face Manifestations", "Nighttime Playfulness"],
+                activityLevel: "moderate",
+                yearEstablished: 1890,
+                type: "Cemetery"
+            },
+            {
+                id: "al025",
+                state: "AL",
+                name: "Cardiff Cemetery",
+                city: "Graysville",
+                coordinates: [33.6198, -86.9661],
+                story: "Located in Graysville, this cemetery is known for its mysterious orbs and strange lights that appear throughout the graveyard with no traceable source. The cemetery has gained a peculiar reputation for automotive interference - cars may stop dead on Friday the 13th and have trouble starting for five minutes.",
+                features: ["Mysterious Orbs", "Friday the 13th Car Trouble", "Strange Lights", "Automotive Interference"],
+                activityLevel: "moderate",
+                yearEstablished: 1880,
+                type: "Cemetery"
+            },
+            {
+                id: "al026",
+                state: "AL",
+                name: "Cooley Cemetery",
+                city: "Anniston",
+                coordinates: [33.6597, -85.8316],
+                story: "Located on Brindle Mountain near Manchester Drive, this off-the-beaten-path cemetery dates back to the Civil War era. The cemetery experiences supernatural mist phenomena where a mysterious fog will cover only the tombstones while leaving the surrounding woodlands completely clear.",
+                features: ["Selective Supernatural Mist", "Cold Breezes", "Unmarked Grave Spirits", "Mountain Isolation"],
+                activityLevel: "moderate",
+                yearEstablished: 1865,
+                type: "Cemetery"
+            },
+            {
+                id: "al027",
+                state: "AL",
+                name: "Harper Hill Church & Cemetery",
+                city: "Dadeville",
+                coordinates: [32.8301, -85.7635],
+                story: "This abandoned and deteriorating site has been left to decay for many years, but its former residents refuse to rest peacefully. Local legend tells of a minister who went utterly insane over a century ago and murdered his entire family before taking his own life within the church walls.",
+                features: ["Family Murder Spirits", "Abandoned Church Hauntings", "Insane Minister Ghost", "Deteriorating Sacred Ground"],
+                activityLevel: "high",
+                yearEstablished: 1870,
+                type: "Cemetery"
+            },
+            {
+                id: "al028",
+                state: "AL",
+                name: "Easly Cemetery",
+                city: "Jasper",
+                coordinates: [33.8312, -87.2775],
+                story: "This cemetery is known for its aggressive supernatural phenomena that manifest primarily at night. Visitors commonly encounter a fiery red orb that floats through the graveyard and has been known to chase people who venture too close. A white phantom figure has also been spotted on the adjacent road.",
+                features: ["Chasing Fire Orbs", "White Phantom Figure", "Visitor Illness", "Screaming Sounds"],
+                activityLevel: "high",
+                yearEstablished: 1885,
+                type: "Cemetery"
+            },
+            {
+                id: "al029",
+                state: "AL",
+                name: "New Providence Cemetery",
+                city: "Coy",
+                coordinates: [32.2879, -86.3658],
+                story: "Also known as Coy Cemetery, this burial ground serves as the final resting place for many prominent African Americans from the area's history. The cemetery is illuminated by mysterious lights that glow above the graves with no traceable earthly source, creating an otherworldly atmosphere.",
+                features: ["Mysterious Grave Lights", "Disembodied Voices", "African American History", "Untraceable Light Sources"],
+                activityLevel: "moderate",
+                yearEstablished: 1870,
+                type: "Cemetery"
+            },
+            {
+                id: "al030",
+                state: "AL",
+                name: "Cemetery Mountain",
+                city: "Munford",
+                coordinates: [33.5329, -85.9497],
+                story: "Located in Munford, this aptly named location features scattered graves across a mountain. Local tales speak of an old abandoned church somewhere on the mountain containing a pedestal bearing a single book. Legend claims the book can be lifted but becomes impossibly heavy as you approach the church door.",
+                features: ["Scattered Mountain Graves", "Mysterious Heavy Book", "Abandoned Church", "Supernatural Weight Phenomena"],
+                activityLevel: "moderate",
+                yearEstablished: 1860,
+                type: "Cemetery"
+            },
+            {
+                id: "al031",
+                state: "AL",
+                name: "Little Vine Cemetery",
+                city: "Empire",
+                coordinates: [33.8184, -86.8119],
+                story: "This small cemetery near the Little Vine Church possesses a simple but persistent supernatural phenomenon. A faint green light appears above the gravestones during the night hours, visible to motorists driving past the cemetery. The consistent nature of the green light sightings has earned it recognition.",
+                features: ["Faint Green Light", "Nighttime Manifestations", "Roadside Sightings", "Consistent Phenomena"],
+                activityLevel: "low",
+                yearEstablished: 1875,
+                type: "Cemetery"
+            },
+            {
+                id: "al032",
+                state: "AL",
+                name: "Consolation Church Cemetery",
+                city: "Red Level",
+                coordinates: [31.4054, -86.6208],
+                story: "This abandoned church and cemetery complex was left to deteriorate for years before the church building was destroyed by fire in 2015. During its abandonment, visitors reported Confederate soldiers, ghostly children, and a shrieking banshee. Most terrifying were sightings of hellhounds with glowing red eyes.",
+                features: ["Confederate Soldier Spirits", "Ghostly Children", "Shrieking Banshee", "Hellhounds with Red Eyes"],
+                activityLevel: "high",
+                yearEstablished: 1850,
+                type: "Cemetery"
+            },
+            {
+                id: "al033",
+                state: "AL",
+                name: "Village Falls Cemetery",
+                city: "Birmingham",
+                coordinates: [33.4734, -86.8074],
+                story: "This Birmingham-area cemetery has gained attention from paranormal investigators and visitors who report hearing unknown voices while walking among the graves. The disembodied voices seem to engage visitors in conversation, though the words are often unclear or fragmented.",
+                features: ["Unknown Voices", "Disembodied Conversations", "Multiple Spirit Activity", "Vocal Manifestations"],
+                activityLevel: "moderate",
+                yearEstablished: 1890,
+                type: "Cemetery"
+            },
+            {
+                id: "al034",
+                state: "AL",
+                name: "Bladon Springs Cemetery",
+                city: "Bladon Springs",
+                coordinates: [31.6790, -88.1119],
+                story: "Located near the Tombigbee River, this cemetery holds the tragic story of the steamboat James T. Staples disaster of 1913. Twenty-six souls died when the ship exploded and sank. Captain Norman Staples, who had lost the ship to creditors and committed suicide, is buried here. His sad spirit patrols the grounds.",
+                features: ["Steamboat Disaster Spirits", "Captain's Eternal Vigil", "River Tragedy Ghosts", "Multiple Family Deaths"],
+                activityLevel: "moderate",
+                yearEstablished: 1900,
+                type: "Cemetery"
+            },
+            {
+                id: "al035",
+                state: "AL",
+                name: "Pine Hill Cemetery",
+                city: "Auburn",
+                coordinates: [32.6099, -85.4808],
+                story: "This cemetery was established in 1863 close to a Confederate hospital relocated from Vicksburg, Mississippi after the city's fall during the Civil War. Most graves belong to Confederate soldiers, though tradition holds that unmarked graves beyond the back fence contain Union soldiers.",
+                features: ["Civil War Hospital Spirits", "Union and Confederate Ghosts", "Full Apparitions", "Physical Contact from Spirits"],
+                activityLevel: "moderate",
+                yearEstablished: 1863,
+                type: "Cemetery"
+            }
+        ];
+
+        let currentDisplayedLocations = [];
+
+        // Activity level colors for map markers
+        const activityColors = {
+            high: '#ff4444',
+            moderate: '#ffaa44',
+            low: '#44ff44'
         };
 
-        // Sample AI-generated haunted locations database with real coordinates
-        const hauntedLocationsDB = {
-            cemetery: [
-                {
-                    name: "Whispering Oaks Cemetery",
-                    story: "Established in 1847, this Victorian-era cemetery is known for the mysterious woman in white who walks among the graves at midnight. Visitors report cold spots near the old mausoleums and the sound of children laughing near the family plots.",
-                    features: ["Cold Spots", "Apparitions", "EVP Activity", "Mysterious Lights"],
-                    activityLevel: "moderate"
-                },
-                {
-                    name: "Shadowmere Memorial Gardens",
-                    story: "This sprawling cemetery dating back to 1823 is home to the ghost of a Civil War soldier who still patrols the grounds. The sound of marching boots echoes through the paths, and visitors often see a figure in uniform standing by the war memorial.",
-                    features: ["Phantom Footsteps", "Military Apparitions", "Temperature Drops", "Electromagnetic Disturbances"],
-                    activityLevel: "intense"
-                },
-                {
-                    name: "Restwood Cemetery",
-                    story: "A small family cemetery from the 1800s where unexplained orbs of light dance between the headstones. Locals report hearing funeral bells ring at 3 AM, though no church bells exist for miles around.",
-                    features: ["Orb Activity", "Phantom Bells", "Electromagnetic Anomalies", "Time Distortions"],
-                    activityLevel: "mild"
-                }
-            ],
-            mansion: [
-                {
-                    name: "Blackwood Manor",
-                    story: "Built in 1889 by railroad baron Edmund Blackwood, this Gothic Revival mansion is said to be cursed by the tragic deaths of three generations of the family. Visitors report doors opening on their own, piano music from empty rooms, and the scent of roses in winter.",
-                    features: ["Moving Objects", "Phantom Music", "Unexplained Scents", "Shadow Figures"],
-                    activityLevel: "intense"
-                },
-                {
-                    name: "Ravencroft Estate",
-                    story: "Once home to a prominent 19th-century judge, this Victorian mansion harbors dark secrets. The ghost of Judge Ravencroft is said to still hear cases in his study, and witnesses report the sound of a gavel striking wood in the dead of night.",
-                    features: ["Phantom Sounds", "Cold Drafts", "Electrical Disturbances", "Spectral Figures"],
-                    activityLevel: "moderate"
-                },
-                {
-                    name: "Thornfield House",
-                    story: "This antebellum mansion was abandoned after a mysterious fire in 1923. Visitors report seeing lights in the windows and hearing party music from the ballroom, as if the final celebration never ended.",
-                    features: ["Phantom Lights", "Residual Hauntings", "Period Music", "Apparitions in Period Dress"],
-                    activityLevel: "moderate"
-                }
-            ],
-            asylum: [
-                {
-                    name: "Millfield Psychiatric Hospital",
-                    story: "Abandoned in 1987, this former mental health facility is notorious for its dark history and ongoing paranormal activity. Visitors report hearing patients' voices echoing through empty corridors and seeing figures in hospital gowns wandering the halls.",
-                    features: ["Disembodied Voices", "Apparitions", "Medical Equipment Moving", "Overwhelming Sadness"],
-                    activityLevel: "intense"
-                },
-                {
-                    name: "Crescent Hills Sanitarium",
-                    story: "Built in 1904 to treat tuberculosis patients, this abandoned sanitarium is known for its ghostly residents who never left. The sound of wheelchairs rolling down empty halls and coughing fits echo through the building.",
-                    features: ["Phantom Wheelchairs", "Residual Sounds", "Cold Spots", "Electrical Disturbances"],
-                    activityLevel: "intense"
-                }
-            ],
-            hotel: [
-                {
-                    name: "The Grandview Hotel",
-                    story: "This 1920s luxury hotel has never closed its doors, but some guests never checked out. Room 237 is permanently unavailable due to reports of a woman in 1920s attire who appears in mirrors and rearranges guests' belongings.",
-                    features: ["Mirror Apparitions", "Moving Objects", "Vintage Perfume Scent", "Elevator Malfunctions"],
-                    activityLevel: "moderate"
-                },
-                {
-                    name: "The Winchester Inn",
-                    story: "A historic coaching inn dating back to 1765, where travelers report sharing their rooms with previous guests from centuries past. The ghost of a stagecoach driver still announces arrivals at midnight.",
-                    features: ["Phantom Announcements", "Period Apparitions", "Cold Drafts", "Historical Reenactment"],
-                    activityLevel: "mild"
-                }
-            ],
-            battlefield: [
-                {
-                    name: "Bloody Creek Battlefield",
-                    story: "Site of a brutal Civil War skirmish in 1863, where over 200 soldiers lost their lives in a single day.  Visitors report hearing musket fire and battle cries, and seeing uniformed figures marching across the field at dawn.",
-                    features: ["Battle Sounds", "Military Apparitions", "Residual Energy", "Historical Imprints"],
-                    activityLevel: "intense"
-                }
-            ],
-            school: [
-                {
-                    name: "Riverside Elementary",
-                    story: "Closed in 1995 after declining enrollment, this old school building echoes with the laughter and voices of children who once learned here. Teachers report seeing students in their classrooms and hearing the school bell ring.",
-                    features: ["Children's Voices", "Phantom School Bells", "Classroom Activity", "Playful Spirits"],
-                    activityLevel: "mild"
-                }
-            ],
-            theater: [
-                {
-                    name: "The Majestic Opera House",
-                    story: "Built in 1898, this grand theater is home to 'The Lady in Red,' a former actress who died on opening night. She still takes her bow during performances, and actors report receiving flowers from empty seats.",
-                    features: ["Phantom Actress", "Mysterious Flowers", "Curtain Movement", "Spotlight Activity"],
-                    activityLevel: "moderate"
-                }
-            ],
-            prison: [
-                {
-                    name: "Irongate Penitentiary",
-                    story: "Operational from 1876 to 1963, this former prison housed some of the most notorious criminals of its era. Guard tours report cell doors slamming shut, keys rattling, and the sound of chains dragging across floors.",
-                    features: ["Slamming Doors", "Phantom Keys", "Chain Sounds", "Oppressive Atmosphere"],
-                    activityLevel: "intense"
-                }
-            ]
-        };
+        // Initialize the application
+        function initializeApp() {
+            updateStatistics();
+            displayAllLocations();
+        }
 
-        let currentLocations = [];
+        // Filter and display locations based on current selections
+        function filterAndDisplayLocations() {
+            const stateFilter = document.getElementById('stateFilter').value;
+            const typeFilter = document.getElementById('locationType').value;
+            const activityFilter = document.getElementById('activityLevel').value;
+            const sortOrder = document.getElementById('sortOrder').value;
 
-        function generateHauntedLocations() {
-            const region = document.getElementById('region').value;
-            const locationType = document.getElementById('locationType').value;
-            const activityLevel = document.getElementById('activityLevel').value;
-            const locationCount = parseInt(document.getElementById('locationCount').value);
+            // Filter locations
+            let filteredLocations = hauntedLocations.filter(location => {
+                const stateMatch = !stateFilter || location.state === stateFilter;
+                const typeMatch = !typeFilter || location.type === typeFilter;
+                const activityMatch = !activityFilter || location.activityLevel === activityFilter;
+                return stateMatch && typeMatch && activityMatch;
+            });
 
+            // Sort locations based on selected option
+            filteredLocations = sortLocations(filteredLocations, sortOrder);
+
+            currentDisplayedLocations = filteredLocations;
+            
+            // Show loading
+            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 Filtering haunted locations...</div>';
+            
+            setTimeout(() => {
+                displayLocationsOnMap(filteredLocations);
+                displayLocationsList(filteredLocations);
+                updateDisplayedCount(filteredLocations.length);
+                
+                // Center map on filtered results
+                if (filteredLocations.length > 0) {
+                    centerMapOnLocations(filteredLocations);
+                }
+            }, 1000);
+        }
+
+        // Sort locations based on selected criteria
+        function sortLocations(locations, sortBy) {
+            const sortedLocations = [...locations]; // Create a copy to avoid mutating original array
+            
+            switch(sortBy) {
+                case 'alphabetical':
+                    return sortedLocations.sort((a, b) => a.name.localeCompare(b.name));
+                    
+                case 'alphabetical-desc':
+                    return sortedLocations.sort((a, b) => b.name.localeCompare(a.name));
+                    
+                case 'activity':
+                    const activityOrder = { 'high': 3, 'moderate': 2, 'low': 1 };
+                    return sortedLocations.sort((a, b) => {
+                        const aOrder = activityOrder[a.activityLevel];
+                        const bOrder = activityOrder[b.activityLevel];
+                        if (aOrder === bOrder) {
+                            return a.name.localeCompare(b.name); // Secondary sort by name
+                        }
+                        return bOrder - aOrder; // High activity first
+                    });
+                    
+                case 'year':
+                    return sortedLocations.sort((a, b) => {
+                        if (a.yearEstablished === b.yearEstablished) {
+                            return a.name.localeCompare(b.name); // Secondary sort by name
+                        }
+                        return a.yearEstablished - b.yearEstablished; // Oldest first
+                    });
+                    
+                case 'type':
+                    return sortedLocations.sort((a, b) => {
+                        if (a.type === b.type) {
+                            return a.name.localeCompare(b.name); // Secondary sort by name
+                        }
+                        return a.type.localeCompare(b.type);
+                    });
+                    
+                case 'city':
+                    return sortedLocations.sort((a, b) => {
+                        if (a.city === b.city) {
+                            return a.name.localeCompare(b.name); // Secondary sort by name
+                        }
+                        return a.city.localeCompare(b.city);
+                    });
+                    
+                default:
+                    return sortedLocations.sort((a, b) => a.name.localeCompare(b.name)); // Default to alphabetical
+            }
+        }
+
+        // Display all locations initially
+        function displayAllLocations() {
+            const sortOrder = document.getElementById('sortOrder')?.value || 'alphabetical';
+            const sortedLocations = sortLocations(hauntedLocations, sortOrder);
+            currentDisplayedLocations = sortedLocations;
+            displayLocationsOnMap(sortedLocations);
+            displayLocationsList(sortedLocations);
+            updateDisplayedCount(sortedLocations.length);
+        }
+
+        // Center map on a set of locations
+        function centerMapOnLocations(locations) {
+            if (locations.length === 0) return;
+            
+            if (locations.length === 1) {
+                map.setView(locations[0].coordinates, 10);
+            } else {
+                const group = new L.featureGroup(locations.map(loc => 
+                    L.marker(loc.coordinates)
+                ));
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        // Display locations on map
+        function displayLocationsOnMap(locations) {
             // Clear existing markers
             markersGroup.clearLayers();
 
-            // Move map to selected region
-            const regionData = regionCoords[region];
-            map.setView(regionData.center, regionData.zoom);
-
-            // Show loading
-            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 Generating haunted locations...</div>';
-            
-            setTimeout(() => {
-                currentLocations = [];
-                
-                // Generate locations based on selections
-                const types = locationType === 'mixed' ? Object.keys(hauntedLocationsDB) : [locationType];
-                
-                for (let i = 0; i < locationCount; i++) {
-                    const randomType = types[Math.floor(Math.random() * types.length)];
-                    const typeLocations = hauntedLocationsDB[randomType] || hauntedLocationsDB.cemetery;
-                    const baseLocation = typeLocations[Math.floor(Math.random() * typeLocations.length)];
-                    
-                    // Generate coordinates within the selected region
-                    const coords = generateRegionalCoordinates(region);
-                    
-                    // Create variation of the base location
-                    const location = {
-                        id: i,
-                        name: generateVariationName(baseLocation.name, i),
-                        type: randomType,
-                        story: generateVariationStory(baseLocation.story, i),
-                        features: shuffleArray([...baseLocation.features]).slice(0, 3 + Math.floor(Math.random() * 2)),
-                        activityLevel: activityLevel === 'mixed' ? 
-                            ['mild', 'moderate', 'intense'][Math.floor(Math.random() * 3)] : 
-                            activityLevel,
-                        lat: coords.lat,
-                        lng: coords.lng
-                    };
-                    
-                    currentLocations.push(location);
-                }
-                
-                displayLocationsOnMap();
-                displayLocationsList();
-            }, 2000); // Simulate AI generation time
-        }
-
-        function generateRegionalCoordinates(region) {
-            const bounds = {
-                northeast: { latMin: 40.0, latMax: 47.0, lngMin: -80.0, lngMax: -67.0 },
-                southeast: { latMin: 25.0, latMax: 39.0, lngMin: -90.0, lngMax: -75.0 },
-                midwest: { latMin: 35.0, latMax: 49.0, lngMin: -104.0, lngMax: -82.0 },
-                southwest: { latMin: 25.0, latMax: 42.0, lngMin: -125.0, lngMax: -94.0 },
-                west: { latMin: 32.0, latMax: 49.0, lngMin: -125.0, lngMax: -102.0 },
-                uk: { latMin: 50.0, latMax: 59.0, lngMin: -8.0, lngMax: 2.0 },
-                europe: { latMin: 35.0, latMax: 70.0, lngMin: -10.0, lngMax: 40.0 }
-            };
-
-            const bound = bounds[region];
-            return {
-                lat: Math.random() * (bound.latMax - bound.latMin) + bound.latMin,
-                lng: Math.random() * (bound.lngMax - bound.lngMin) + bound.lngMin
-            };
-        }
-
-        function generateVariationName(baseName, index) {
-            const prefixes = ['Old', 'Forgotten', 'Ancient', 'Cursed', 'Lost', 'Hidden', 'Abandoned', 'Mysterious'];
-            const suffixes = ['Heights', 'Hollow', 'Ridge', 'Grove', 'Point', 'Valley', 'Cross', 'Hill'];
-            
-            if (Math.random() < 0.3) {
-                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-                return baseName.replace(/^[\w\s]+/, prefix + ' ' + baseName.split(' ').slice(-1)[0]);
-            }
-            
-            return baseName;
-        }
-
-        function generateVariationStory(baseStory, index) {
-            const variations = [
-                baseStory,
-                baseStory.replace(/visitors report/gi, 'witnesses have experienced'),
-                baseStory.replace(/said to be/gi, 'believed to be'),
-                baseStory.replace(/ghost of/gi, 'spirit of'),
-                baseStory.replace(/mysterious/gi, 'unexplained')
-            ];
-            
-            return variations[index % variations.length];
-        }
-
-        function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-        }
-
-        function displayLocationsOnMap() {
-            currentLocations.forEach(location => {
-                // Create custom icon
+            locations.forEach(location => {
+                // Create custom icon based on activity level
+                const color = activityColors[location.activityLevel];
                 const hauntedIcon = L.divIcon({
                     className: 'haunted-marker',
                     html: '👻',
@@ -634,34 +1064,49 @@
                 });
 
                 // Create marker
-                const marker = L.marker([location.lat, location.lng], {
+                const marker = L.marker(location.coordinates, {
                     icon: hauntedIcon
                 }).addTo(markersGroup);
 
                 // Create popup content
                 const popupContent = `
                     <h3>${location.name}</h3>
-                    <p><strong>Type:</strong> ${location.type.charAt(0).toUpperCase() + location.type.slice(1)}</p>
+                    <p><strong>Location:</strong> ${location.city}, ${location.state}</p>
+                    <p><strong>Type:</strong> ${location.type}</p>
                     <p><strong>Activity:</strong> ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)}</p>
-                    <p><strong>Coordinates:</strong> ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</p>
-                    <p>${location.story.substring(0, 150)}...</p>
+                    <p><strong>Established:</strong> ${location.yearEstablished}</p>
+                    <p><strong>Coordinates:</strong> ${location.coordinates[0].toFixed(4)}, ${location.coordinates[1].toFixed(4)}</p>
+                    <p>${location.story.substring(0, 200)}...</p>
                 `;
 
                 marker.bindPopup(popupContent, {
                     maxWidth: 300,
                     className: 'haunted-popup'
                 });
+
+                // Add click event to focus on location in list
+                marker.on('click', () => {
+                    const locationCard = document.querySelector(`[data-id="${location.id}"]`);
+                    if (locationCard) {
+                        locationCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        locationCard.style.transform = 'scale(1.02)';
+                        setTimeout(() => {
+                            locationCard.style.transform = 'scale(1)';
+                        }, 1000);
+                    }
+                });
             });
         }
 
-        function displayLocationsList() {
+        // Display locations list
+        function displayLocationsList(locations) {
             const listContainer = document.getElementById('locationsList');
             
-            listContainer.innerHTML = currentLocations.map(location => `
-                <div class="location-card">
+            listContainer.innerHTML = locations.map(location => `
+                <div class="location-card activity-${location.activityLevel}" data-id="${location.id}">
                     <div class="location-title">${location.name}</div>
-                    <div class="coordinates">📍 ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</div>
-                    <div class="location-type">${location.type.charAt(0).toUpperCase() + location.type.slice(1)} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity</div>
+                    <div class="coordinates">📍 ${location.city}, ${location.state} | ${location.coordinates[0].toFixed(4)}, ${location.coordinates[1].toFixed(4)}</div>
+                    <div class="location-type">${location.type} - ${location.activityLevel.charAt(0).toUpperCase() + location.activityLevel.slice(1)} Activity | Est. ${location.yearEstablished}</div>
                     <div class="location-story">${location.story}</div>
                     <div class="location-features">
                         <h4>Reported Paranormal Activity:</h4>
@@ -669,14 +1114,103 @@
                             ${location.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                         </div>
                     </div>
+                    <button onclick="focusMapOnLocation('${location.id}')" style="margin-top: 10px; padding: 8px 15px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">Show on Map</button>
                 </div>
             `).join('');
         }
 
-        // Generate initial locations on page load
-        window.addEventListener('load', () => {
-            setTimeout(generateHauntedLocations, 1000);
+        // Focus map on specific location
+        function focusMapOnLocation(locationId) {
+            const location = hauntedLocations.find(loc => loc.id === locationId);
+            if (location) {
+                map.setView(location.coordinates, 12);
+                
+                // Find and open the marker popup
+                markersGroup.eachLayer(marker => {
+                    if (marker.getLatLng().lat === location.coordinates[0] && 
+                        marker.getLatLng().lng === location.coordinates[1]) {
+                        marker.openPopup();
+                    }
+                });
+            }
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const totalCount = hauntedLocations.length;
+            const highActivityCount = hauntedLocations.filter(loc => loc.activityLevel === 'high').length;
+            
+            document.getElementById('totalLocations').textContent = totalCount;
+            document.getElementById('highActivity').textContent = highActivityCount;
+        }
+
+        // Update displayed count
+        function updateDisplayedCount(count) {
+            document.getElementById('displayedCount').textContent = count;
+        }
+
+        // Search functionality
+        function searchLocations(query) {
+            if (!query || query.length < 2) {
+                displayAllLocations();
+                return;
+            }
+            
+            const searchResults = hauntedLocations.filter(location => 
+                location.name.toLowerCase().includes(query.toLowerCase()) ||
+                location.story.toLowerCase().includes(query.toLowerCase()) ||
+                location.city.toLowerCase().includes(query.toLowerCase()) ||
+                location.type.toLowerCase().includes(query.toLowerCase()) ||
+                location.features.some(feature => 
+                    feature.toLowerCase().includes(query.toLowerCase())
+                )
+            );
+            
+            // Sort search results alphabetically by default
+            const sortOrder = document.getElementById('sortOrder')?.value || 'alphabetical';
+            const sortedResults = sortLocations(searchResults, sortOrder);
+            
+            displayLocationsOnMap(sortedResults);
+            displayLocationsList(sortedResults);
+            updateDisplayedCount(sortedResults.length);
+            
+            if (sortedResults.length > 0) {
+                centerMapOnLocations(sortedResults);
+            }
+        }
+
+        // Add search input to controls (optional enhancement)
+        function addSearchInput() {
+            const searchInput = document.createElement('div');
+            searchInput.className = 'control-group';
+            searchInput.innerHTML = `
+                <label>Search:</label>
+                <input type="text" id="searchInput" placeholder="Search locations..." onkeyup="handleSearch(event)">
+            `;
+            
+            const controls = document.querySelector('.map-controls');
+            controls.insertBefore(searchInput, controls.lastElementChild);
+        }
+
+        // Handle search input
+        function handleSearch(event) {
+            const query = event.target.value;
+            if (event.key === 'Enter' || query.length === 0 || query.length >= 2) {
+                searchLocations(query);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            addSearchInput();
         });
+
+        // Add event listeners for filtering
+        document.getElementById('stateFilter').addEventListener('change', filterAndDisplayLocations);
+        document.getElementById('locationType').addEventListener('change', filterAndDisplayLocations);
+        document.getElementById('activityLevel').addEventListener('change', filterAndDisplayLocations);
+        document.getElementById('sortOrder').addEventListener('change', filterAndDisplayLocations);
     </script>
 </body>
 </html>
