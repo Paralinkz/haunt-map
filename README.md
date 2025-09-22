@@ -1,6 +1,6 @@
-# 👻 AI Generated Haunted Map
+# 👻 Interactive Haunted Map
 
-An interactive web application that generates mysterious and haunted locations with AI-powered paranormal stories and activities.
+An interactive web application that generates mysterious and haunted locations with paranormal stories and activities.
 
 ## 🌟 Features
 
@@ -14,9 +14,9 @@ An interactive web application that generates mysterious and haunted locations w
 
 1. **Select Your Preferences**:
    - Choose a region (Northeast US, Southeast US, etc.)
-   - Pick location types (Cemeteries, Mansions, Asylums, etc.)
+   - Pick location types (Cemeteries, Historical, Attractions, etc.)
    - Set activity level (Mild, Moderate, or Intense)
-   - Choose number of locations (5-20)
+   - Choose number of locations (10-50)
 
 2. **Generate Locations**: Click the "Generate Locations" button
 
