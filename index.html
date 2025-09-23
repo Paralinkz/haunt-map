@@ -373,6 +373,39 @@
             font-weight: bold;
         }
 
+        .image-management {
+            background: rgba(42, 42, 42, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 2px solid #ff6b35;
+        }
+
+        .fetch-images-btn {
+            background: linear-gradient(135deg, #ff6b35, #e55a2e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .fetch-images-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .fetch-images-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         @media (max-width: 768px) {
             .map-controls {
                 flex-direction: column;
@@ -412,7 +445,7 @@
     <div class="container">
         <div class="instructions">
             <h3>🗺️ How to Use the Map</h3>
-            <p>Select your preferences below and click "Generate Locations" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>35 documented haunted locations</strong> in Alabama!</p>
+            <p>Select your preferences below and click "Apply Filters" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>35 documented haunted locations</strong> in Alabama!</p>
         </div>
 
         <div class="statistics">
@@ -428,6 +461,17 @@
                 <div class="stat-number" id="displayedCount">0</div>
                 <div>Currently Displayed</div>
             </div>
+        </div>
+
+        <div class="image-management">
+            <h3 style="color: #ff6b35; margin-bottom: 15px;">🖼️ Image Management</h3>
+            <button id="fetchImagesBtn" class="fetch-images-btn" onclick="updateHauntedSitesWithImages()">
+                🔮 Fetch Real Images for All Locations
+            </button>
+            <p style="color: #ccc; font-size: 0.9em; margin-top: 10px;">
+                This will replace placeholder images with real photos from Unsplash
+            </p>
+            <div id="imageProgress" style="margin-top: 15px; color: #ff6b35; display: none;"></div>
         </div>
 
         <div class="map-controls">
@@ -549,6 +593,200 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     
     <script>
+        // === IMAGE FETCHER CODE ===
+        class HauntedImageFetcher {
+            constructor(unsplashApiKey) {
+                this.apiKey = unsplashApiKey;
+                this.cache = new Map();
+                this.rateLimitDelay = 1100;
+                
+                this.fallbackImages = {
+                    "Cemetery": "https://source.unsplash.com/800x600/?cemetery,gothic,historic",
+                    "Church": "https://source.unsplash.com/800x600/?church,historic,architecture",
+                    "College": "https://source.unsplash.com/800x600/?university,campus,historic",
+                    "Ghost Town": "https://source.unsplash.com/800x600/?abandoned,town,desert",
+                    "Historic House": "https://source.unsplash.com/800x600/?mansion,victorian,historic",
+                    "Hotel": "https://source.unsplash.com/800x600/?hotel,historic,vintage",
+                    "Industrial Site": "https://source.unsplash.com/800x600/?industrial,abandoned,factory",
+                    "Military Site": "https://source.unsplash.com/800x600/?fort,military,historic",
+                    "Mining Site": "https://source.unsplash.com/800x600/?mine,abandoned,industrial",
+                    "Prison": "https://source.unsplash.com/800x600/?prison,bars,abandoned",
+                    "Restaurant": "https://source.unsplash.com/800x600/?restaurant,historic,vintage",
+                    "Saloon": "https://source.unsplash.com/800x600/?saloon,western,vintage",
+                    "Terrain": "https://source.unsplash.com/800x600/?landscape,spooky,dark",
+                    "Theater": "https://source.unsplash.com/800x600/?theater,vintage,architecture"
+                };
+            }
+
+            createSearchQuery(site) {
+                const { name, city, state, type } = site;
+                const cleanName = name.replace(/^The\s+/i, '').replace(/\s+(House|Hotel|Theater|Prison)$/i, '');
+                
+                return [
+                    `${name} ${city} ${state}`,
+                    `${cleanName} ${city} historic`,
+                    `${name} haunted`,
+                    `${type.toLowerCase()} ${city} ${state}`,
+                    `historic ${type.toLowerCase()}`
+                ];
+            }
+
+            async fetchFromUnsplash(query) {
+                if (this.cache.has(query)) {
+                    return this.cache.get(query);
+                }
+
+                try {
+                    const response = await fetch(
+                        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=3&orientation=landscape`,
+                        {
+                            headers: {
+                                'Authorization': `Client-ID ${this.apiKey}`
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.results && data.results.length > 0) {
+                        const bestImage = data.results.find(img => 
+                            img.description && (
+                                img.description.toLowerCase().includes('historic') ||
+                                img.description.toLowerCase().includes('architecture') ||
+                                img.description.toLowerCase().includes('building')
+                            )
+                        ) || data.results[0];
+                        
+                        const imageUrl = bestImage.urls.regular;
+                        this.cache.set(query, imageUrl);
+                        return imageUrl;
+                    }
+                } catch (error) {
+                    console.warn(`Failed to fetch image for query "${query}":`, error.message);
+                }
+                
+                return null;
+            }
+
+            async getImageForSite(site) {
+                const queries = this.createSearchQuery(site);
+                
+                for (const query of queries) {
+                    console.log(`Trying query: "${query}" for ${site.name}`);
+                    
+                    const imageUrl = await this.fetchFromUnsplash(query);
+                    if (imageUrl) {
+                        console.log(`✓ Found image for ${site.name}: ${imageUrl}`);
+                        return imageUrl;
+                    }
+                    
+                    await this.delay(this.rateLimitDelay);
+                }
+                
+                const fallbackUrl = this.fallbackImages[site.type] || this.fallbackImages["Historic House"];
+                console.log(`Using fallback image for ${site.name}: ${fallbackUrl}`);
+                return fallbackUrl;
+            }
+
+            async processAllSites(sites, progressCallback) {
+                const updatedSites = [];
+                
+                console.log(`Processing ${sites.length} sites...`);
+                
+                for (let i = 0; i < sites.length; i++) {
+                    const site = sites[i];
+                    
+                    try {
+                        console.log(`[${i + 1}/${sites.length}] Processing: ${site.name}`);
+                        
+                        if (progressCallback) {
+                            progressCallback(i + 1, sites.length, site.name);
+                        }
+                        
+                        const imageUrl = await this.getImageForSite(site);
+                        
+                        const updatedSite = {
+                            ...site,
+                            imageUrl: imageUrl
+                        };
+                        
+                        updatedSites.push(updatedSite);
+                        
+                    } catch (error) {
+                        console.error(`Error processing ${site.name}:`, error);
+                        updatedSites.push({
+                            ...site,
+                            imageUrl: this.fallbackImages[site.type] || this.fallbackImages["Historic House"]
+                        });
+                    }
+                }
+                
+                return updatedSites;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Function to update your haunted locations with real images
+        async function updateHauntedSitesWithImages() {
+            const apiKey = 'YOUR_UNSPLASH_API_KEY_HERE'; // Replace with your actual API key
+            
+            if (apiKey === 'YOUR_UNSPLASH_API_KEY_HERE') {
+                alert('Please add your Unsplash API key to the script first!');
+                return;
+            }
+            
+            const fetcher = new HauntedImageFetcher(apiKey);
+            const progressDiv = document.getElementById('imageProgress');
+            const button = document.getElementById('fetchImagesBtn');
+            
+            try {
+                button.disabled = true;
+                button.textContent = '🔄 Fetching Images...';
+                progressDiv.style.display = 'block';
+                progressDiv.textContent = 'Starting image fetch process...';
+                
+                console.log('Starting image fetch process...');
+                
+                const updatedSites = await fetcher.processAllSites(hauntedLocations, (current, total, siteName) => {
+                    progressDiv.textContent = `Processing ${current}/${total}: ${siteName}`;
+                });
+                
+                // Replace the original array with updated images
+                hauntedLocations.length = 0;
+                hauntedLocations.push(...updatedSites);
+                
+                console.log('✓ Image fetch complete! Refreshing display...');
+                progressDiv.textContent = '✓ Image fetch complete! Refreshing display...';
+                
+                // Refresh the display with new images
+                filterAndDisplayLocations();
+                
+                setTimeout(() => {
+                    progressDiv.style.display = 'none';
+                    button.disabled = false;
+                    button.textContent = '✓ Images Updated Successfully!';
+                    
+                    setTimeout(() => {
+                        button.textContent = '🔮 Fetch Real Images for All Locations';
+                    }, 3000);
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error updating images:', error);
+                progressDiv.textContent = '❌ Error fetching images. Check console for details.';
+                button.disabled = false;
+                button.textContent = '🔮 Fetch Real Images for All Locations';
+            }
+        }
+        // === END IMAGE FETCHER CODE ===
+
         // Initialize the map - Center on Alabama initially
         let map = L.map('map').setView([32.806671, -86.79113], 7);
 
@@ -561,7 +799,7 @@
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
 
-        // Optimized haunted locations database - Alabama locations (shortened for space)
+        // Optimized haunted locations database - Alabama locations
         const hauntedLocations = [
             {
                 id: "al001",
