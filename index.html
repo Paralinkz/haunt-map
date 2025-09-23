@@ -1365,16 +1365,25 @@
                 });
 
                 marker.on('click', () => {
-                    const locationCard = document.querySelector(`[data-id="${location.id}"]`);
-                    if (locationCard) {
-                        locationCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        locationCard.style.transform = 'scale(1.02)';
-                        setTimeout(() => {
-                            locationCard.style.transform = 'scale(1)';
-                        }, 1000);
-                    }
+                    // Remove highlight from any previously highlighted cards
+                    document.querySelectorAll('.location-card.highlighted').forEach(card => {
+                        card.classList.remove('highlighted');
                 });
-            });
+    
+                const locationCard = document.querySelector(`[data-id="${location.id}"]`);
+                if (locationCard) {
+                    // Add highlight class for the pulsing effect
+                    locationCard.classList.add('highlighted');
+        
+                    // Scroll to the card
+                    locationCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+                    // Remove highlight after 3 seconds
+                    setTimeout(() => {
+                        locationCard.classList.remove('highlighted');
+                    }, 3000);
+            }
+});
         }
 
         // Display locations list
