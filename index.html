@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haunted Map - Paranormal Locations</title>
+    <title>Haunt Map - Paranormal Locations</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -434,9 +434,9 @@
 <body>
     <div class="header">
         <div class="header-content-alternative">
-            <img src="fulllogo.jpg" alt="Logo" class="header-logo">
+            <img src="fulllogo-nobuffer.jpg" alt="Logo" class="header-logo">
             <div class="header-text-alternative">
-                <h1>Interactive Haunted Map</h1>
+                <h1>Haunt Map</h1>
                 <p>Explore Haunted Places and Attractions with Stories.</p>
             </div>
         </div>
@@ -444,7 +444,7 @@
 
     <div class="container">
         <div class="instructions">
-            <h3>🗺️ How to Use the Map</h3>
+            <h3>How to Use the Map</h3>
             <p>Select your preferences below and click "Apply Filters" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>35 documented haunted locations</strong> in Alabama!</p>
         </div>
 
@@ -466,10 +466,10 @@
         <div class="image-management">
             <h3 style="color: #ff6b35; margin-bottom: 15px;">Conjure New Images</h3>
             <button id="fetchImagesBtn" class="fetch-images-btn" onclick="updateHauntedSitesWithImages()">
-                Click the Picture Portal for Location Images
+                Click to Show Images
             </button>
             <p style="color: #ccc; font-size: 0.9em; margin-top: 10px;">
-                Lifting the veil, real haunted photos ahead.
+                Lift the veil to see photos of haunted places.
             </p>
             <div id="imageProgress" style="margin-top: 15px; color: #ff6b35; display: none;"></div>
         </div>
@@ -487,6 +487,7 @@
                     <option value="CO">Colorado</option>
                     <option value="CT">Connecticut</option>
                     <option value="DE">Delaware</option>
+                    <option value="DC">District of Columbia</option>
                     <option value="FL">Florida</option>
                     <option value="GA">Georgia</option>
                     <option value="HI">Hawaii</option>
@@ -539,10 +540,11 @@
                     <option value="Cemetery">Cemeteries</option>
                     <option value="Church">Churches</option>
                     <option value="College">Colleges</option>
+                    <option value="Attractions">Haunted Attractions</option>
                     <option value="Ghost Town">Ghost Towns</option>
                     <option value="Historic House">Historic Houses</option>
                     <option value="Hotel">Hotels</option>
-                    <option value="Industrial Site">Industrial Sites</option>
+                    <option value="Industrial">Industrial Sites</option>
                     <option value="Military Site">Military Sites</option>
                     <option value="Mining">Mining Sites</option>
                     <option value="Prison">Prisons</option>
@@ -605,16 +607,17 @@
                     "Church": "https://source.unsplash.com/800x600/?church,historic,architecture",
                     "College": "https://source.unsplash.com/800x600/?university,campus,historic",
                     "Ghost Town": "https://source.unsplash.com/800x600/?abandoned,town,desert",
+                    "Haunted Attraction": "https://source.unsplash.com/800x600/?haunted,house,halloween",
                     "Historic House": "https://source.unsplash.com/800x600/?mansion,victorian,historic",
                     "Hotel": "https://source.unsplash.com/800x600/?hotel,historic,vintage",
                     "Industrial Site": "https://source.unsplash.com/800x600/?industrial,abandoned,factory",
-                    "Military Site": "https://source.unsplash.com/800x600/?fort,military,historic",
+                    "Military Site": "https://source.unsplash.com/800x600/?fort,military,battlefield",
                     "Mining Site": "https://source.unsplash.com/800x600/?mine,abandoned,industrial",
                     "Prison": "https://source.unsplash.com/800x600/?prison,bars,abandoned",
                     "Restaurant": "https://source.unsplash.com/800x600/?restaurant,historic,vintage",
                     "Saloon": "https://source.unsplash.com/800x600/?saloon,western,vintage",
                     "Terrain": "https://source.unsplash.com/800x600/?landscape,spooky,dark",
-                    "Theater": "https://source.unsplash.com/800x600/?theater,vintage,architecture"
+                    "Theater": "https://source.unsplash.com/800x600/?theater,vintage,haunted"
                 };
             }
 
@@ -789,12 +792,6 @@
 
         // Initialize the map - Center on Alabama initially
         let map = L.map('map').setView([32.806671, -86.79113], 7);
-
-        // Add dark-themed tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
 
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
