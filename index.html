@@ -793,6 +793,12 @@
         // Initialize the map - Center on Alabama initially
         let map = L.map('map').setView([32.806671, -86.79113], 7);
 
+        // Add dark-themed tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
 
