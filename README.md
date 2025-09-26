@@ -1,10 +1,10 @@
-# 👻 Interactive Haunted Map
+# 👻 Haunt Map
 
-An interactive web application that generates mysterious and haunted locations with paranormal stories and activities.
+A web application that generates mysterious and haunted locations with paranormal stories and activities.
 
 ## 🌟 Features
 
-- **Interactive Map Interface**: Click and explore haunted locations on a visual map
+- **Map Interface**: Click and explore haunted locations on a visual map
 - **Generated Content**: Each location features unique paranormal stories and activities
 - **Customizable Filters**: Choose by region, location type, and paranormal activity level
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
