@@ -541,7 +541,7 @@
         <div class="image-management">
             <h3 style="color: #ff6b35; margin-bottom: 15px;">Image Management</h3>
             <button id="fetchImagesBtn" class="fetch-images-btn" onclick="updateHauntedSitesWithImages()">
-                Click to Show Location Images
+                📸 Fetch Authentic Location Images
             </button>
             <p style="color: #ccc; font-size: 0.9em; margin-top: 10px;">
                 Searches Wikimedia Commons first for authentic public domain photos, then Unsplash as backup
@@ -759,7 +759,7 @@
             }
  
             async searchUnsplash(query, apiKey) {
-                if (!apiKey || apiKey === '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M') return null;
+                if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') return null;
                 
                 try {
                     const response = await fetch(
@@ -1328,34 +1328,41 @@
                 }).addTo(markersGroup);
  
                 const popupContent = `
-                    <h3>${location.name}</h3>
-                    ${location.imageUrl ? `
-                        <img src="${location.imageUrl}" 
-                             alt="${location.name}" 
-                             style="width: 100%; max-width: 200px; height: auto; border-radius: 5px; margin: 10px 0;"
-                             onerror="this.style.display='none'">
-                    ` : ''}
-                    <p><strong>Location:</strong> ${location.city}, ${location.state}</p>
-                    <p><strong>Type:</strong> ${location.type}</p>
-                    <p><strong>Activity Level:</strong> ${location.activityLevel}</p>
-                    <p><strong>Story:</strong> ${location.story.substring(0, 150)}...</p>
-                    ${location.imageSource ? `<div class="image-source-badge">📸 ${location.imageSource}</div>` : ''}
+                    <div style="max-width: 300px;">
+                        <h3 style="margin-bottom: 10px;">${location.name}</h3>
+                        ${location.imageUrl ? `
+                            <img src="${location.imageUrl}" 
+                                 alt="${location.name}" 
+                                 style="width: 100%; max-width: 280px; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;"
+                                 onerror="this.style.display='none'">
+                        ` : ''}
+                        <p style="margin-bottom: 5px;"><strong>📍 Location:</strong> ${location.city}, ${location.state}</p>
+                        <p style="margin-bottom: 5px;"><strong>🏛️ Type:</strong> ${location.type}</p>
+                        <p style="margin-bottom: 5px;"><strong>📅 Established:</strong> ${location.yearEstablished}</p>
+                        <p style="margin-bottom: 10px;"><strong>⚡ Activity Level:</strong> <span style="color: ${location.activityLevel === 'high' ? '#ff4444' : location.activityLevel === 'moderate' ? '#ffaa44' : '#44ff44'};">${location.activityLevel.toUpperCase()}</span></p>
+                        <div style="margin-bottom: 10px;">
+                            <strong>👻 Story:</strong>
+                            <p style="margin-top: 5px; line-height: 1.4; font-size: 0.9em;">${location.story}</p>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>🔮 Reported Phenomena:</strong>
+                            <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px;">
+                                ${location.features.map(feature => `<span style="background: rgba(255, 107, 53, 0.2); color: #ff6b35; padding: 2px 6px; border-radius: 8px; font-size: 0.8em; border: 1px solid rgba(255, 107, 53, 0.3);">${feature}</span>`).join('')}
+                            </div>
+                        </div>
+                        ${location.imageSource ? `<div style="text-align: center;"><span style="background: rgba(255, 107, 53, 0.2); color: #ff6b35; padding: 2px 6px; border-radius: 8px; font-size: 0.7em; border: 1px solid rgba(255, 107, 53, 0.3);">📸 ${location.imageSource}</span></div>` : ''}
+                    </div>
                 `;
  
                 marker.bindPopup(popupContent, {
-                    maxWidth: 300,
+                    maxWidth: 320,
+                    maxHeight: 400,
                     className: 'haunted-popup'
                 });
- 
+
+                // Remove the automatic scrolling behavior - just open the popup
                 marker.on('click', () => {
-                    const locationCard = document.querySelector(`[data-id="${location.id}"]`);
-                    if (locationCard) {
-                        locationCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        locationCard.style.transform = 'scale(1.02)';
-                        setTimeout(() => {
-                            locationCard.style.transform = 'scale(1)';
-                        }, 1000);
-                    }
+                    marker.openPopup();
                 });
             });
         }
