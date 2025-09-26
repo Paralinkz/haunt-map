@@ -617,13 +617,16 @@
             createSearchQuery(site) {
                 const { name, city, state, type } = site;
                 const cleanName = name.replace(/^The\s+/i, '').replace(/\s+(House|Hotel|Theater|Prison)$/i, '');
-                
+
+                // Focus on haunting and atmospheric imagery
                 return [
-                    `${name} ${city} ${state}`,
-                    `${cleanName} ${city} historic`,
-                    `${name} haunted`,
-                    `${type.toLowerCase()} ${city} ${state}`,
-                    `historic ${type.toLowerCase()}`
+                    `${name} haunted spooky`,
+                    `${cleanName} haunted ghost`,
+                    `haunted ${type.toLowerCase()} spooky`,
+                    `abandoned ${type.toLowerCase()} eerie`,
+                    `spooky ${type.toLowerCase()} dark atmosphere`,
+                    `haunted ${type.toLowerCase()} paranormal`,
+                    `eerie ${type.toLowerCase()} scary`
                 ];
             }
  
