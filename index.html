@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haunt Map - Paranormal Locations</title>
+    <title>Haunted Map - Paranormal Locations</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -501,16 +501,16 @@
             <h3 style="color: #ff6b35; margin-bottom: 15px; text-align: center;">Activity Level Legend</h3>
             <div class="legend-items">
                 <div class="legend-item">
-                    <div class="legend-color activity-high-legend"></div>
-                    <span>High Activity - Frequent paranormal encounters</span>
+                    <div class="legend-color activity-low-legend"></div>
+                    <span>Low Activity - Occasional spiritual presence</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color activity-moderate-legend"></div>
                     <span>Moderate Activity - Regular unexplained phenomena</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color activity-low-legend"></div>
-                    <span>Low Activity - Occasional spiritual presence</span>
+                    <div class="legend-color activity-high-legend"></div>
+                    <span>High Activity - Frequent paranormal encounters</span>
                 </div>
             </div>
         </div>
@@ -1285,7 +1285,7 @@
             locations.forEach(location => {
                 const hauntedIcon = L.divIcon({
                     className: 'haunted-marker',
-                    html: '👻',
+                    html: '📍',
                     iconSize: [30, 30],
                     iconAnchor: [15, 15]
                 });
@@ -1303,10 +1303,10 @@
                                  style="width: 100%; max-width: 280px; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;"
                                  onerror="this.style.display='none'">
                         ` : ''}
-                        <p style="margin-bottom: 5px;"><strong>📍 Location:</strong> ${location.city}, ${location.state}</p>
-                        <p style="margin-bottom: 5px;"><strong>🏛️ Type:</strong> ${location.type}</p>
+                        <p style="margin-bottom: 5px;"><strong>Location:</strong> ${location.city}, ${location.state}</p>
+                        <p style="margin-bottom: 5px;"><strong>Type:</strong> ${location.type}</p>
                         <p style="margin-bottom: 5px;"><strong>Established:</strong> ${location.yearEstablished}</p>
-                        <p style="margin-bottom: 10px;"><strong>⚡ Activity Level:</strong> <span style="color: ${location.activityLevel === 'high' ? '#ff4444' : location.activityLevel === 'moderate' ? '#ffaa44' : '#44ff44'};">${location.activityLevel.toUpperCase()}</span></p>
+                        <p style="margin-bottom: 10px;"><strong>Activity Level:</strong> <span style="color: ${location.activityLevel === 'high' ? '#ff4444' : location.activityLevel === 'moderate' ? '#ffaa44' : '#44ff44'};">${location.activityLevel.toUpperCase()}</span></p>
                         <div style="margin-bottom: 10px;">
                             <strong>Story:</strong>
                             <p style="margin-top: 5px; line-height: 1.4; font-size: 0.9em;">${location.story}</p>
@@ -1349,7 +1349,7 @@
                         </div>
                     ` : ''}
                     <div class="location-title">${location.name}</div>
-                    <div class="coordinates">📍 ${location.city}, ${location.state}</div>
+                    <div class="coordinates">${location.city}, ${location.state}</div>
                     <div class="location-type">${location.type}</div>
                     <div class="location-story">${location.story}</div>
                     <div class="location-features">
@@ -1358,7 +1358,7 @@
                             ${location.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                         </div>
                     </div>
-                    ${location.imageSource ? `<div class="image-source-badge">📸 Source: ${location.imageSource}</div>` : ''}
+                    ${location.imageSource ? `<div class="image-source-badge">Source: ${location.imageSource}</div>` : ''}
                 </div>
             `).join('');
         }
@@ -1389,14 +1389,4 @@
         document.getElementById('sortOrder').addEventListener('change', filterAndDisplayLocations);
     </script>
 </body>
-</html>d Wikimedia image for ${site.name}`);
-                        this.cache.set(cacheKey, result);
-                        return result;
-                    }
-                    
-                    await this.delay(800);
-                    
-                    // Try Unsplash as secondary source
-                    result = await this.searchUnsplash(query, apiKeys.unsplash);
-                    if (result) {
-                        console.log(`✓ Foun
+</html>
