@@ -411,6 +411,47 @@
             margin-top: 5px;
             border: 1px solid rgba(255, 107, 53, 0.3);
         }
+
+        .legend {
+            background: rgba(42, 42, 42, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .legend-items {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .activity-high-legend {
+            background: #ff4444;
+        }
+
+        .activity-moderate-legend {
+            background: #ffaa44;
+        }
+
+        .activity-low-legend {
+            background: #44ff44;
+        }
  
         @media (max-width: 768px) {
             .map-controls {
@@ -434,6 +475,16 @@
                 flex-direction: column;
                 gap: 10px;
             }
+
+            .legend-items {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .legend-item {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -451,7 +502,7 @@
     <div class="container">
         <div class="instructions">
             <h3>How to Use</h3>
-            <p>Select your preferences below and click "Apply Filters" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>20 documented haunted locations</strong> in Alabama!</p>
+            <p>Select your preferences below and click "Apply Filters" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>20 documented haunted locations</strong> in Alabama! Use "Fetch Authentic Location Images" to load real photos.</p>
         </div>
  
         <div class="statistics">
@@ -468,11 +519,29 @@
                 <div>Currently Displayed</div>
             </div>
         </div>
+
+        <div class="legend">
+            <h3 style="color: #ff6b35; margin-bottom: 15px; text-align: center;">Activity Level Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color activity-high-legend"></div>
+                    <span>High Activity - Frequent paranormal encounters</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color activity-moderate-legend"></div>
+                    <span>Moderate Activity - Regular unexplained phenomena</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color activity-low-legend"></div>
+                    <span>Low Activity - Occasional spiritual presence</span>
+                </div>
+            </div>
+        </div>
  
         <div class="image-management">
             <h3 style="color: #ff6b35; margin-bottom: 15px;">Image Management</h3>
             <button id="fetchImagesBtn" class="fetch-images-btn" onclick="updateHauntedSitesWithImages()">
-                📸 Fetch Authentic Location Images
+                Click to Show Location Images
             </button>
             <p style="color: #ccc; font-size: 0.9em; margin-top: 10px;">
                 Searches Wikimedia Commons first for authentic public domain photos, then Unsplash as backup
@@ -484,8 +553,8 @@
             <div class="control-group">
                 <label>State:</label>
                 <select id="stateFilter">
-                    <option value="">All States</option>
-                    <option value="AL" selected>Alabama</option>
+                    <option value="" selected>All States</option>
+                    <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
                     <option value="AZ">Arizona</option>
                     <option value="AR">Arkansas</option>
@@ -690,7 +759,7 @@
             }
  
             async searchUnsplash(query, apiKey) {
-                if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') return null;
+                if (!apiKey || apiKey === '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M') return null;
                 
                 try {
                     const response = await fetch(
@@ -864,20 +933,40 @@
         }
         // === END MULTI-SOURCE IMAGE FETCHER CODE ===
  
-        // Initialize the map - Center on Alabama initially
-        let map = L.map('map').setView([32.806671, -86.79113], 7);
+        // Initialize the map - Center on US initially
+        let map = L.map('map').setView([39.8283, -98.5795], 4);
 
         // Use CartoDB Dark Matter tiles for proper dark theme
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
-            maxZoom: 20
+            maxZoom: 19
         }).addTo(map);
+
+        // Alternative fallback tile layer in case CartoDB fails
+        const fallbackTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        });
+
+        // Add error handling for tile loading
+        map.on('tileerror', function(error, tile) {
+            console.log('Tile loading error:', error);
+            // Switch to fallback tiles if primary fails
+            setTimeout(() => {
+                map.removeLayer(map.eachLayer(layer => {
+                    if (layer._url && layer._url.includes('cartocdn')) {
+                        map.removeLayer(layer);
+                    }
+                }));
+                fallbackTiles.addTo(map);
+            }, 1000);
+        });
  
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
  
-        // Expanded haunted locations database - Alabama locations
+        // Haunted locations database - No default images until user fetches them
         const hauntedLocations = [
             {
                 id: "al001",
@@ -889,8 +978,7 @@
                 features: ["Disembodied Voices", "Physical Pushing", "Apparitions", "Extreme Cold Spots"],
                 activityLevel: "high",
                 yearEstablished: 1882,
-                type: "Industrial Site",
-                imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop"
+                type: "Industrial Site"
             },
             {
                 id: "al002",
@@ -902,8 +990,7 @@
                 features: ["Phantom Fires", "Ghostly Lights", "Apparitions", "Cold Spots"],
                 activityLevel: "high",
                 yearEstablished: 1837,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1520637836862-4d197d17c73a?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al003",
@@ -915,8 +1002,7 @@
                 features: ["Self-Moving Swings", "Children's Laughter", "Orbs in Photos", "Disembodied Voices"],
                 activityLevel: "high",
                 yearEstablished: 1822,
-                type: "Cemetery",
-                imageUrl: "https://images.unsplash.com/photo-1509248961158-d3bf2d43b025?w=800&h=600&fit=crop"
+                type: "Cemetery"
             },
             {
                 id: "al004",
@@ -928,8 +1014,7 @@
                 features: ["Period Apparitions", "Phantom Sounds", "Shadow Figures", "EMF Spikes"],
                 activityLevel: "moderate",
                 yearEstablished: 1819,
-                type: "Ghost Town",
-                imageUrl: "https://images.unsplash.com/photo-1441260038675-7329ab4cc264?w=800&h=600&fit=crop"
+                type: "Ghost Town"
             },
             {
                 id: "al005",
@@ -941,8 +1026,7 @@
                 features: ["Soldier Apparitions", "Cannon Fire Sounds", "Cold Spots", "Electronic Malfunctions"],
                 activityLevel: "moderate",
                 yearEstablished: 1834,
-                type: "Military Site",
-                imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop"
+                type: "Military Site"
             },
             {
                 id: "al006",
@@ -954,8 +1038,7 @@
                 features: ["Piano Music", "Tobacco Scent", "Moving Doors", "Apparitions"],
                 activityLevel: "moderate",
                 yearEstablished: 1843,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al007",
@@ -967,8 +1050,7 @@
                 features: ["Mysterious Face in Window", "Cold Spots", "Unexplained Sounds", "Camera Malfunctions"],
                 activityLevel: "moderate",
                 yearEstablished: 1877,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al008",
@@ -980,8 +1062,7 @@
                 features: ["Phantom Footsteps", "Intercom Voices", "Naval Apparitions", "Equipment Malfunctions"],
                 activityLevel: "moderate",
                 yearEstablished: 1942,
-                type: "Military Site",
-                imageUrl: "https://images.unsplash.com/photo-1544827924-0d5b211f6fe3?w=800&h=600&fit=crop"
+                type: "Military Site"
             },
             {
                 id: "al009",
@@ -993,8 +1074,7 @@
                 features: ["Weeping Woman", "Glowing Orbs", "Overwhelming Sadness", "Phantom Sobbing"],
                 activityLevel: "moderate",
                 yearEstablished: 1845,
-                type: "Cemetery",
-                imageUrl: "https://images.unsplash.com/photo-1520500807606-fd6f5db4b18b?w=800&h=600&fit=crop"
+                type: "Cemetery"
             },
             {
                 id: "al010",
@@ -1006,8 +1086,7 @@
                 features: ["Phantom Train Sounds", "Military Apparitions", "Cold Spots", "Unexplained Voices"],
                 activityLevel: "moderate",
                 yearEstablished: 1860,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1474457484568-dfba5b8960db?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al011",
@@ -1019,8 +1098,7 @@
                 features: ["Moving Garden Tools", "Out-of-Season Blooms", "Gentle Presence", "Floral Scents"],
                 activityLevel: "low",
                 yearEstablished: 1932,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al012",
@@ -1032,8 +1110,7 @@
                 features: ["Phantom Writing", "Falling Books", "Children's Voices", "Classroom Sounds"],
                 activityLevel: "low",
                 yearEstablished: 1907,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al013",
@@ -1045,8 +1122,7 @@
                 features: ["Woman in White", "Sudden Sadness", "Mournful Singing", "Temperature Drops"],
                 activityLevel: "low",
                 yearEstablished: 1800,
-                type: "Terrain",
-                imageUrl: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop"
+                type: "Terrain"
             },
             {
                 id: "al014",
@@ -1058,8 +1134,7 @@
                 features: ["Monk Apparition", "Spiritual Presence", "Peaceful Energy", "Moving Shadows"],
                 activityLevel: "low",
                 yearEstablished: 1934,
-                type: "Church",
-                imageUrl: "https://images.unsplash.com/photo-1569425409825-4b01c4b1d6c4?w=800&h=600&fit=crop"
+                type: "Church"
             },
             {
                 id: "al015",
@@ -1071,8 +1146,7 @@
                 features: ["Gentleman Apparition", "Moving Newspapers", "Phantom Reading", "Cigar Smoke Scent"],
                 activityLevel: "low",
                 yearEstablished: 1884,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al016",
@@ -1084,8 +1158,7 @@
                 features: ["Woman in Blue Dress", "Magnolia Scent", "Gliding Apparition", "Piano Music"],
                 activityLevel: "moderate",
                 yearEstablished: 1833,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al017",
@@ -1097,8 +1170,7 @@
                 features: ["Unexplained Lights", "Strange Odors", "Equipment Malfunctions", "Security Alerts"],
                 activityLevel: "moderate",
                 yearEstablished: 1941,
-                type: "Military Site",
-                imageUrl: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop"
+                type: "Military Site"
             },
             {
                 id: "al018",
@@ -1110,8 +1182,7 @@
                 features: ["Soldier Apparitions", "Medical Sounds", "Moving Equipment", "Phantom Surgery"],
                 activityLevel: "high",
                 yearEstablished: 1858,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=600&fit=crop"
+                type: "Historic House"
             },
             {
                 id: "al019",
@@ -1123,8 +1194,7 @@
                 features: ["Trapped Spirit Energy", "Bottle Lights", "EMF Anomalies", "Unnatural Silence"],
                 activityLevel: "low",
                 yearEstablished: 1990,
-                type: "Terrain",
-                imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop"
+                type: "Terrain"
             },
             {
                 id: "al020",
@@ -1136,8 +1206,7 @@
                 features: ["Phantom Carriages", "Horse Hoof Sounds", "Period Apparitions", "Shadow Figures"],
                 activityLevel: "moderate",
                 yearEstablished: 1840,
-                type: "Historic House",
-                imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop"
+                type: "Historic House"
             }
         ];
 
