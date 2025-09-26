@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haunted Map - Paranormal Locations</title>
+    <title>Haunt Map - Paranormal Locations</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -321,24 +321,6 @@
             padding: 40px;
         }
  
-        .instructions {
-            background: rgba(42, 42, 42, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #ff6b35;
-        }
- 
-        .instructions h3 {
-            color: #ff6b35;
-            margin-bottom: 10px;
-        }
- 
-        .instructions p {
-            color: #ccc;
-            line-height: 1.5;
-        }
- 
         .coordinates {
             color: #aaa;
             font-size: 0.8em;
@@ -500,11 +482,6 @@
     </div>
  
     <div class="container">
-        <div class="instructions">
-            <h3>How to Use</h3>
-            <p>Select your preferences below and click "Apply Filters" to populate the haunted sites. Click on any ghost marker to view the location details. Currently featuring <strong>20 documented haunted locations</strong> in Alabama! Use "View Location Images" to load photos.</p>
-        </div>
- 
         <div class="statistics">
             <div class="stat-item">
                 <div class="stat-number" id="totalLocations">20</div>
@@ -809,16 +786,6 @@
                     
                     // Try Wikimedia Commons first (public domain)
                     let result = await this.searchWikimediaCommons(query);
-                    if (result) {
-                        console.log(`✓ Found Wikimedia image for ${site.name}`);
-                        this.cache.set(cacheKey, result);
-                        return result;
-                    }
-                    
-                    await this.delay(800);
-                    
-                    // Try Unsplash as secondary source
-                    result = await this.searchUnsplash(query, apiKeys.unsplash);
                     if (result) {
                         console.log(`✓ Found Unsplash image for ${site.name}`);
                         this.cache.set(cacheKey, result);
@@ -1338,14 +1305,14 @@
                         ` : ''}
                         <p style="margin-bottom: 5px;"><strong>📍 Location:</strong> ${location.city}, ${location.state}</p>
                         <p style="margin-bottom: 5px;"><strong>🏛️ Type:</strong> ${location.type}</p>
-                        <p style="margin-bottom: 5px;"><strong>📅 Established:</strong> ${location.yearEstablished}</p>
+                        <p style="margin-bottom: 5px;"><strong>Established:</strong> ${location.yearEstablished}</p>
                         <p style="margin-bottom: 10px;"><strong>⚡ Activity Level:</strong> <span style="color: ${location.activityLevel === 'high' ? '#ff4444' : location.activityLevel === 'moderate' ? '#ffaa44' : '#44ff44'};">${location.activityLevel.toUpperCase()}</span></p>
                         <div style="margin-bottom: 10px;">
-                            <strong>👻 Story:</strong>
+                            <strong>Story:</strong>
                             <p style="margin-top: 5px; line-height: 1.4; font-size: 0.9em;">${location.story}</p>
                         </div>
                         <div style="margin-bottom: 10px;">
-                            <strong>🔮 Reported Phenomena:</strong>
+                            <strong>Reported Phenomena:</strong>
                             <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px;">
                                 ${location.features.map(feature => `<span style="background: rgba(255, 107, 53, 0.2); color: #ff6b35; padding: 2px 6px; border-radius: 8px; font-size: 0.8em; border: 1px solid rgba(255, 107, 53, 0.3);">${feature}</span>`).join('')}
                             </div>
@@ -1422,4 +1389,14 @@
         document.getElementById('sortOrder').addEventListener('change', filterAndDisplayLocations);
     </script>
 </body>
-</html>
+</html>d Wikimedia image for ${site.name}`);
+                        this.cache.set(cacheKey, result);
+                        return result;
+                    }
+                    
+                    await this.delay(800);
+                    
+                    // Try Unsplash as secondary source
+                    result = await this.searchUnsplash(query, apiKeys.unsplash);
+                    if (result) {
+                        console.log(`✓ Foun
