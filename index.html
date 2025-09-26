@@ -793,6 +793,16 @@
                     // Try Wikimedia Commons first (public domain)
                     let result = await this.searchWikimediaCommons(query);
                     if (result) {
+                        console.log(`✓ Found Wikimedia image for ${site.name}`);
+                        this.cache.set(cacheKey, result);
+                        return result;
+                    }
+                    
+                    await this.delay(800);
+                    
+                    // Try Unsplash as secondary source
+                    result = await this.searchUnsplash(query, apiKeys.unsplash);
+                    if (result) {
                         console.log(`✓ Found Unsplash image for ${site.name}`);
                         this.cache.set(cacheKey, result);
                         return result;
@@ -893,7 +903,7 @@
                     button.textContent = '✓ Authentic Images Updated Successfully!';
                     
                     setTimeout(() => {
-                        button.textContent = '📸 Fetch Authentic Location Images';
+                        button.textContent = 'View Location Images';
                     }, 3000);
                 }, 2000);
                 
@@ -901,7 +911,7 @@
                 console.error('Error updating images:', error);
                 progressDiv.textContent = '❌ Error fetching images. Check console for details.';
                 button.disabled = false;
-                button.textContent = '📸 Fetch Authentic Location Images';
+                button.textContent = 'View Location Images';
             }
         }
         // === END MULTI-SOURCE IMAGE FETCHER CODE ===
