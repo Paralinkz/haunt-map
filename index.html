@@ -148,12 +148,24 @@
  
         /* Custom marker styles */
         .haunted-marker {
-            border: 2px solid #fff;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            width: 16px;
+            height: 20px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
             cursor: pointer;
+            position: relative;
+        }
+        
+        .haunted-marker::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            position: absolute;
+            top: 3px;
+            left: 3px;
         }
         
         .haunted-marker.activity-high {
@@ -1302,8 +1314,8 @@
                 const hauntedIcon = L.divIcon({
                     className: `haunted-marker activity-${location.activityLevel}`,
                     html: '',
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
+                    iconSize: [16, 20],
+                    iconAnchor: [8, 20]
                 });
  
                 const marker = L.marker(location.coordinates, {
