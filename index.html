@@ -33,9 +33,12 @@
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
+            justify-content: flex-start;
+            gap: 30px;
             flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
  
         .header-logo {
@@ -43,10 +46,12 @@
             max-width: 200px;
             height: auto;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.7));
+            flex-shrink: 0;
         }
  
         .header-text {
-            text-align: center;
+            text-align: left;
+            flex-grow: 1;
         }
  
         .header h1 {
@@ -65,6 +70,11 @@
             .header-content {
                 flex-direction: column;
                 gap: 15px;
+                text-align: center;
+            }
+            
+            .header-text {
+                text-align: center;
             }
             
             .header-logo {
@@ -148,24 +158,24 @@
  
         /* Custom marker styles */
         .haunted-marker {
-            border: 2px solid #fff;
+            background: radial-gradient(circle, #ff6b35, #cc4a1a);
+            border: 2px solid #ff8c42;
             border-radius: 50%;
-            width: 14px;
-            height: 14px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.7);
+            animation: pulse 2s infinite;
             cursor: pointer;
+            transition: opacity 0.3s ease;
         }
         
-        .haunted-marker.activity-high {
-            background: #ff4444;
-        }
-        
-        .haunted-marker.activity-moderate {
-            background: #ffaa44;
-        }
-        
-        .haunted-marker.activity-low {
-            background: #44ff44;
+        .haunted-marker:hover,
+        .haunted-marker.selected {
+            opacity: 0.7;
         }
  
         @keyframes pulse {
@@ -742,7 +752,7 @@
             }
  
             async searchUnsplash(query, apiKey) {
-                if (!apiKey || apiKey === '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M') return null;
+                if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') return null;
                 
                 try {
                     const response = await fetch(
@@ -868,7 +878,7 @@
         // Function to update haunted locations with authentic images
         async function updateHauntedSitesWithImages() {
             const apiKeys = {
-                unsplash: '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M' // Replace with your API key
+                unsplash: '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M'
             };
             
             const fetcher = new HauntedLocationImageFetcher();
@@ -877,11 +887,11 @@
             
             try {
                 button.disabled = true;
-                button.textContent = 'Fetching Authentic Location Images...';
+                button.textContent = '🔄 Fetching Authentic Location Images...';
                 progressDiv.style.display = 'block';
                 progressDiv.textContent = 'Searching for photos of haunted locations...';
                 
-                console.log('Starting authentic image search process...');
+                console.log('Starting image search process...');
                 
                 const updatedSites = await fetcher.processAllLocations(hauntedLocations, (current, total, siteName) => {
                     progressDiv.textContent = `Processing ${current}/${total}: ${siteName}`;
@@ -900,7 +910,7 @@
                 setTimeout(() => {
                     progressDiv.style.display = 'none';
                     button.disabled = false;
-                    button.textContent = '✓ Images Updated Successfully!';
+                    button.textContent = '✓ Authentic Images Updated Successfully!';
                     
                     setTimeout(() => {
                         button.textContent = 'View Location Images';
@@ -919,37 +929,68 @@
         // Initialize the map - Center on US initially
         let map = L.map('map').setView([39.8283, -98.5795], 4);
 
-        // Use CartoDB Dark Matter tiles for proper dark theme
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Primary tile layer - CartoDB Dark Matter
+        const primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             maxZoom: 19
-        }).addTo(map);
+        });
 
-        // Alternative fallback tile layer in case CartoDB fails
+        // Fallback tile layer - OpenStreetMap
         const fallbackTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
         });
 
-        // Add error handling for tile loading
-        map.on('tileerror', function(error, tile) {
-            console.log('Tile loading error:', error);
-            // Switch to fallback tiles if primary fails
-            setTimeout(() => {
-                map.removeLayer(map.eachLayer(layer => {
-                    if (layer._url && layer._url.includes('cartocdn')) {
-                        map.removeLayer(layer);
-                    }
-                }));
-                fallbackTiles.addTo(map);
-            }, 1000);
+        // Secondary fallback - Different CartoDB endpoint
+        const secondaryTiles = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
         });
+
+        // Try to add primary tiles first
+        let currentTileLayer = primaryTiles;
+        currentTileLayer.addTo(map);
+
+        // Enhanced error handling for tile loading
+        let tileErrorCount = 0;
+        map.on('tileerror', function(error) {
+            console.log('Tile loading error:', error);
+            tileErrorCount++;
+            
+            // If we get multiple tile errors, switch to fallback
+            if (tileErrorCount > 3) {
+                console.log('Switching to fallback tiles...');
+                map.removeLayer(currentTileLayer);
+                
+                // Try secondary tiles first, then fallback to OSM
+                if (currentTileLayer === primaryTiles) {
+                    currentTileLayer = secondaryTiles;
+                    currentTileLayer.addTo(map);
+                } else if (currentTileLayer === secondaryTiles) {
+                    currentTileLayer = fallbackTiles;
+                    currentTileLayer.addTo(map);
+                }
+                
+                tileErrorCount = 0; // Reset counter
+            }
+        });
+
+        // Force refresh tiles if still gray after 5 seconds
+        setTimeout(() => {
+            if (tileErrorCount > 0) {
+                console.log('Force switching to OpenStreetMap tiles...');
+                map.removeLayer(currentTileLayer);
+                currentTileLayer = fallbackTiles;
+                currentTileLayer.addTo(map);
+            }
+        }, 5000);
  
         // Store markers for clearing
         let markersGroup = L.layerGroup().addTo(map);
  
-        // Haunted locations database - No default images until user fetches them
+        // Haunted locations database
         const hauntedLocations = [
             {
                 id: "al001",
@@ -1195,13 +1236,6 @@
 
         let currentDisplayedLocations = [];
  
-        // Activity level colors for map markers
-        const activityColors = {
-            high: '#ff4444',
-            moderate: '#ffaa44',
-            low: '#44ff44'
-        };
- 
         // Initialize the application
         function initializeApp() {
             updateStatistics();
@@ -1300,10 +1334,10 @@
  
             locations.forEach(location => {
                 const hauntedIcon = L.divIcon({
-                    className: `haunted-marker activity-${location.activityLevel}`,
-                    html: '',
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
+                    className: 'haunted-marker',
+                    html: '📍',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
                 });
  
                 const marker = L.marker(location.coordinates, {
@@ -1343,7 +1377,6 @@
                     className: 'haunted-popup'
                 });
 
-                // Remove the automatic scrolling behavior - just open the popup
                 marker.on('click', () => {
                     marker.openPopup();
                 });
