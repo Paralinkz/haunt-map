@@ -146,7 +146,21 @@
             z-index: 1;
         }
  
-        /* Base pin shape */ .haunted-marker { width: 18px; height: 18px; border-radius: 50%; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.5); cursor: pointer; } /* Little pointer "tail" for the pin */ .haunted-marker::after { content: ''; position: absolute; left: 50%; bottom: -8px; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid currentColor; /* matches pin color */ transform: translateX(-50%); } /* Color variants based on activity level */ .haunted-marker.activity-high { background-color: #ff4444; /* red */ color: #ff4444; } .haunted-marker.activity-moderate { background-color: #ffaa44; /* orange */ color: #ffaa44; } .haunted-marker.activity-low { background-color: #44ff44; /* green */ color: #44ff44; } 
+        /* Custom marker styles */
+        .haunted-marker {
+            background: radial-gradient(circle, #ff6b35, #cc4a1a);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.7);
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
  
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); }
@@ -368,7 +382,7 @@
             cursor: not-allowed;
             transform: none;
         }
- 
+
         .image-source-badge {
             display: inline-block;
             background: rgba(255, 107, 53, 0.2);
@@ -379,21 +393,21 @@
             margin-top: 5px;
             border: 1px solid rgba(255, 107, 53, 0.3);
         }
- 
+
         .legend {
             background: rgba(42, 42, 42, 0.9);
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
         }
- 
+
         .legend-items {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
             gap: 15px;
         }
- 
+
         .legend-item {
             display: flex;
             align-items: center;
@@ -401,22 +415,22 @@
             color: #ccc;
             font-size: 0.9em;
         }
- 
+
         .legend-color {
             width: 20px;
             height: 20px;
             border-radius: 3px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
- 
+
         .activity-high-legend {
             background: #ff4444;
         }
- 
+
         .activity-moderate-legend {
             background: #ffaa44;
         }
- 
+
         .activity-low-legend {
             background: #44ff44;
         }
@@ -443,13 +457,13 @@
                 flex-direction: column;
                 gap: 10px;
             }
- 
+
             .legend-items {
                 flex-direction: column;
                 align-items: center;
                 gap: 10px;
             }
- 
+
             .legend-item {
                 justify-content: center;
             }
@@ -482,7 +496,7 @@
                 <div>Currently Displayed</div>
             </div>
         </div>
- 
+
         <div class="legend">
             <h3 style="color: #ff6b35; margin-bottom: 15px; text-align: center;">Activity Level Legend</h3>
             <div class="legend-items">
@@ -722,7 +736,7 @@
             }
  
             async searchUnsplash(query, apiKey) {
-                if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') return null;
+                if (!apiKey || apiKey === '3t7QkwquuCZ6faMM80mIMkrAQlybHcukcnrRADjhy_M') return null;
                 
                 try {
                     const response = await fetch(
@@ -772,16 +786,6 @@
                     
                     // Try Wikimedia Commons first (public domain)
                     let result = await this.searchWikimediaCommons(query);
-                    if (result) {
-                        console.log(`✓ Found Wikimedia image for ${site.name}`);
-                        this.cache.set(cacheKey, result);
-                        return result;
-                    }
-                    
-                    await this.delay(800);
-                    
-                    // Try Unsplash as secondary source
-                    result = await this.searchUnsplash(query, apiKeys.unsplash);
                     if (result) {
                         console.log(`✓ Found Unsplash image for ${site.name}`);
                         this.cache.set(cacheKey, result);
@@ -844,7 +848,7 @@
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
         }
- 
+
         // Function to update haunted locations with authentic images
         async function updateHauntedSitesWithImages() {
             const apiKeys = {
@@ -857,9 +861,9 @@
             
             try {
                 button.disabled = true;
-                button.textContent = '🔄 Fetching Authentic Location Images...';
+                button.textContent = '🔄 Fetching Location Images...';
                 progressDiv.style.display = 'block';
-                progressDiv.textContent = 'Searching for authentic photos of haunted locations...';
+                progressDiv.textContent = 'Searching for photos of haunted locations...';
                 
                 console.log('Starting authentic image search process...');
                 
@@ -880,10 +884,10 @@
                 setTimeout(() => {
                     progressDiv.style.display = 'none';
                     button.disabled = false;
-                    button.textContent = '✓ Authentic Images Updated Successfully!';
+                    button.textContent = '✓ Images Updated Successfully!';
                     
                     setTimeout(() => {
-                        button.textContent = 'View Location Images';
+                        button.textContent = 'Fetch Location Images';
                     }, 3000);
                 }, 2000);
                 
@@ -891,27 +895,27 @@
                 console.error('Error updating images:', error);
                 progressDiv.textContent = '❌ Error fetching images. Check console for details.';
                 button.disabled = false;
-                button.textContent = 'View Location Images';
+                button.textContent = 'Fetch Location Images';
             }
         }
         // === END MULTI-SOURCE IMAGE FETCHER CODE ===
  
         // Initialize the map - Center on US initially
         let map = L.map('map').setView([39.8283, -98.5795], 4);
- 
+
         // Use CartoDB Dark Matter tiles for proper dark theme
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
- 
+
         // Alternative fallback tile layer in case CartoDB fails
         const fallbackTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
         });
- 
+
         // Add error handling for tile loading
         map.on('tileerror', function(error, tile) {
             console.log('Tile loading error:', error);
@@ -1172,14 +1176,14 @@
                 type: "Historic House"
             }
         ];
- 
+
         let currentDisplayedLocations = [];
  
         // Activity level colors for map markers
         const activityColors = {
-            high: '#ff4444',
+            low: '#44ff44'            
             moderate: '#ffaa44',
-            low: '#44ff44'
+            high: '#ff4444',
         };
  
         // Initialize the application
@@ -1209,7 +1213,7 @@
             currentDisplayedLocations = filteredLocations;
             
             // Show loading
-            document.getElementById('locationsList').innerHTML = '<div class="loading">🔮 Filtering haunted locations...</div>';
+            document.getElementById('locationsList').innerHTML = '<div class="loading">Filtering haunted locations...</div>';
             
             setTimeout(() => {
                 displayLocationsOnMap(filteredLocations);
@@ -1280,10 +1284,10 @@
  
             locations.forEach(location => {
                 const hauntedIcon = L.divIcon({
-                    className: `haunted-marker activity-${location.activityLevel}`,
-                    html: '',
-                    iconSize: [16, 20],
-                    iconAnchor: [8, 20]
+                    className: 'haunted-marker',
+                    html: '📍',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
                 });
  
                 const marker = L.marker(location.coordinates, {
@@ -1322,7 +1326,7 @@
                     maxHeight: 400,
                     className: 'haunted-popup'
                 });
- 
+
                 // Remove the automatic scrolling behavior - just open the popup
                 marker.on('click', () => {
                     marker.openPopup();
