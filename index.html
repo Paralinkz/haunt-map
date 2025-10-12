@@ -9,6 +9,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     
     <style>
+    /* Custom Leaflet control styling */
+    .leaflet-control-zoom {
+        border: 2px solid #444 !important;
+        background: rgba(0, 0, 0, 0.9) !important;
+        box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3) !important;
+    }
+
+    .leaflet-control-zoom a {
+    background-color: rgba(42, 42, 42, 0.95) !important;
+    color: #ff6b35 !important;
+    border-bottom: 1px solid #444 !important;
+    }
+
+    .leaflet-control-zoom a:hover {
+    background-color: rgba(255, 107, 53, 0.2) !important;
+    color: #ff8c42 !important;
+    }
+
+    .leaflet-bar {
+    border: none !important;
+    }
+
+    .leaflet-control-attribution {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #ccc !important;
+    }
+
+    .leaflet-control-attribution a {
+    color: #ff6b35 !important;
+    }
+        
         * {
             margin: 0;
             padding: 0;
