@@ -1,4 +1,4 @@
-# 👻 Haunt Map
+# 👻 ParaMapz
 
 A web application that generates mysterious and haunted locations with paranormal stories and activities.
 
