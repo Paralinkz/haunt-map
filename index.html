@@ -687,16 +687,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     
     <script>
-        // === MULTI-SOURCE IMAGE FETCHER CODE ===
-        class HauntedLocationImageFetcher {
-            constructor() {
-                this.cache = new Map();
-                this.rateLimitDelay = 1200;
-                
-                // Public domain and free image sources
-                this.imageSources = {
-                    wikimedia: 'https://commons.wikimedia.org/w/api.php',
-                    unsplash: 'https://api.unsplash.com/search/photos'
                 };
                 
                 this.fallbackImages = {
