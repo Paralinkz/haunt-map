@@ -26303,5 +26303,253 @@ type: "Local Legend"
         document.getElementById('activityLevel').addEventListener('change', filterAndDisplayLocations);
         document.getElementById('sortOrder').addEventListener('change', filterAndDisplayLocations);
     </script>
+	    <!-- Leaflet JS - MUST load first -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Your main map script -->
+    <script>
+        // All your map initialization code here
+        // (the code that uses L.map, etc.)
+    </script>
+    
+    <!-- Firebase Scripts - Load AFTER Leaflet -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase initialization and functions -->
+    <script>
+        // Firebase config and loadFirebaseSubmissions() function
+    </script>
+</body>
+</html>
+
+Better Fix: Add Loading Checks
+Actually, let me create a better version that waits for all libraries to load properly. Replace the Firebase script section (the last <script> block before </body>) with this improved version:
+html    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Wait for Firebase to load before initializing
+        function initializeFirebase() {
+            if (typeof firebase === 'undefined') {
+                console.log('⏳ Waiting for Firebase to load...');
+                setTimeout(initializeFirebase, 100);
+                return;
+            }
+
+            console.log('🔥 Firebase loaded, initializing...');
+
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyDQc5QRJjffHpGfZLdZXS_u6jMNVHiLTXQ",
+                authDomain: "paralinkz-9c7fb.firebaseapp.com",
+                projectId: "paralinkz-9c7fb",
+                storageBucket: "paralinkz-9c7fb.firebasestorage.app",
+                messagingSenderId: "957927612029",
+                appId: "1:957927612029:web:ddf7e38c647c8a3df1db14"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            // Function to load Firebase submissions
+            async function loadFirebaseSubmissions() {
+                try {
+                    console.log('🔥 Loading Firebase submissions...');
+                    
+                    // Get all pending (unverified) submissions
+                    const pendingSnapshot = await db.collection('haunted_locations')
+                        .where('verified', '==', false)
+                        .get();
+                    
+                    console.log(`📝 Found ${pendingSnapshot.size} pending submissions`);
+
+                    // Create orange markers for pending submissions
+                    pendingSnapshot.forEach((doc) => {
+                        const location = doc.data();
+                        
+                        // Create orange marker for pending review
+                        const marker = L.circleMarker(
+                            [location.latitude, location.longitude],
+                            {
+                                radius: 10,
+                                fillColor: '#ff6b35',
+                                color: '#fff',
+                                weight: 3,
+                                opacity: 1,
+                                fillOpacity: 0.9
+                            }
+                        );
+
+                        // Create popup for pending submission
+                        const popupContent = `
+                            <div class="location-card">
+                                <div class="location-header">
+                                    <h3 style="color: #ff6b35;">⚠️ PENDING REVIEW</h3>
+                                    <h3>${location.name}</h3>
+                                    <span class="activity-badge" style="background: orange;">Under Review</span>
+                                </div>
+                                <div class="location-details">
+                                    <p><strong>📍 Location:</strong> ${location.city}, ${location.state}</p>
+                                    ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ''}
+                                    ${location.description ? `<p><strong>Description:</strong> ${location.description}</p>` : ''}
+                                    ${location.phenomena ? `<p><strong>Paranormal Activity:</strong> ${location.phenomena}</p>` : ''}
+                                    ${location.category ? `<p><strong>Type:</strong> ${location.category}</p>` : ''}
+                                    ${location.yearBuilt ? `<p><strong>Year Built:</strong> ${location.yearBuilt}</p>` : ''}
+                                    ${location.isPublic ? `<p>✅ Open to Public</p>` : ''}
+                                    ${location.hasTours ? `<p>🎟️ Tours Available</p>` : ''}
+                                    ${location.website ? `<p><strong>Website:</strong> <a href="${location.website}" target="_blank" style="color: #ff6b35;">${location.website}</a></p>` : ''}
+                                    <p style="font-size: 0.9em; color: #999; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333;">
+                                        <strong>Submitted:</strong> ${new Date(location.submittedDate).toLocaleDateString()}<br>
+                                        <strong>Submitter:</strong> ${location.submitterEmail || 'Anonymous'}<br>
+                                        <strong>Firebase ID:</strong> ${doc.id}
+                                    </p>
+                                    <button onclick="approveLocation('${doc.id}')" 
+                                            style="background: #28a745; color: white; padding: 10px 20px; 
+                                                   border: none; border-radius: 5px; cursor: pointer; 
+                                                   margin-top: 15px; width: 100%; font-weight: bold;">
+                                        ✓ Approve This Location
+                                    </button>
+                                    <button onclick="rejectLocation('${doc.id}')" 
+                                            style="background: #dc3545; color: white; padding: 10px 20px; 
+                                                   border: none; border-radius: 5px; cursor: pointer; 
+                                                   margin-top: 10px; width: 100%; font-weight: bold;">
+                                        ✗ Reject This Location
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        marker.bindPopup(popupContent, { maxWidth: 400 });
+                        marker.addTo(markersGroup);
+                    });
+
+                    // Get verified submissions
+                    const verifiedSnapshot = await db.collection('haunted_locations')
+                        .where('verified', '==', true)
+                        .get();
+                    
+                    console.log(`✅ Found ${verifiedSnapshot.size} verified submissions`);
+
+                    // Add verified submissions with green markers
+                    verifiedSnapshot.forEach((doc) => {
+                        const location = doc.data();
+                        
+                        // Create green marker for verified location
+                        const marker = L.circleMarker(
+                            [location.latitude, location.longitude],
+                            {
+                                radius: 8,
+                                fillColor: '#00ff88',
+                                color: '#fff',
+                                weight: 2,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            }
+                        );
+
+                        // Create popup for verified submission
+                        const popupContent = `
+                            <div class="location-card">
+                                <div class="location-header">
+                                    <h3>${location.name}</h3>
+                                    <span class="activity-badge" style="background: green;">✓ Verified</span>
+                                </div>
+                                <div class="location-details">
+                                    <p><strong>📍 Location:</strong> ${location.city}, ${location.state}</p>
+                                    ${location.address ? `<p><strong>Address:</strong> ${location.address}</p>` : ''}
+                                    ${location.description ? `<p><strong>Description:</strong> ${location.description}</p>` : ''}
+                                    ${location.phenomena ? `<p><strong>Paranormal Activity:</strong> ${location.phenomena}</p>` : ''}
+                                    ${location.category ? `<p><strong>Type:</strong> ${location.category}</p>` : ''}
+                                    ${location.yearBuilt ? `<p><strong>Year Built:</strong> ${location.yearBuilt}</p>` : ''}
+                                    ${location.website ? `<p><strong>Website:</strong> <a href="${location.website}" target="_blank" style="color: #00ff88;">${location.website}</a></p>` : ''}
+                                    <p style="font-size: 0.9em; color: #00ff88; margin-top: 15px;">
+                                        ✓ Community Verified Submission
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+
+                        marker.bindPopup(popupContent, { maxWidth: 400 });
+                        marker.addTo(markersGroup);
+                    });
+
+                    // Update statistics to include Firebase submissions
+                    const totalFirebase = pendingSnapshot.size + verifiedSnapshot.size;
+                    if (totalFirebase > 0) {
+                        const currentTotal = parseInt(document.getElementById('totalLocations').textContent);
+                        document.getElementById('totalLocations').textContent = currentTotal + totalFirebase;
+                        
+                        console.log(`🎉 Total locations with Firebase: ${currentTotal + totalFirebase}`);
+                    }
+
+                } catch (error) {
+                    console.error('❌ Error loading Firebase submissions:', error);
+                }
+            }
+
+            // Function to approve a location
+            window.approveLocation = async function(docId) {
+                if (!confirm('✅ Approve this location and make it visible to all users?')) {
+                    return;
+                }
+
+                try {
+                    await db.collection('haunted_locations').doc(docId).update({
+                        verified: true,
+                        verifiedDate: new Date().toISOString()
+                    });
+                    
+                    alert('✅ Location approved successfully! Refreshing map...');
+                    location.reload();
+                } catch (error) {
+                    console.error('Error approving location:', error);
+                    alert('❌ Error approving location: ' + error.message);
+                }
+            }
+
+            // Function to reject a location
+            window.rejectLocation = async function(docId) {
+                const reason = prompt('Optional: Enter a reason for rejection (will be logged)');
+                
+                if (!confirm('❌ Delete this submission permanently? This cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    if (reason) {
+                        await db.collection('haunted_locations').doc(docId).update({
+                            rejectedDate: new Date().toISOString(),
+                            rejectionReason: reason,
+                            status: 'rejected'
+                        });
+                    }
+                    
+                    await db.collection('haunted_locations').doc(docId).delete();
+                    alert('✗ Location rejected and removed. Refreshing map...');
+                    location.reload();
+                } catch (error) {
+                    console.error('Error rejecting location:', error);
+                    alert('❌ Error rejecting location: ' + error.message);
+                }
+            }
+
+            // Load Firebase submissions
+            setTimeout(() => {
+                console.log('🚀 Starting Firebase data load...');
+                loadFirebaseSubmissions();
+            }, 1000);
+        }
+
+        // Start Firebase initialization when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeFirebase);
+        } else {
+            initializeFirebase();
+        }
+    </script>
+</body>
+</html>
 </body>
 </html>
